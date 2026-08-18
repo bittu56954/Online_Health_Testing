@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart_society_app
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongo:27017/smart_society_db
+      - JWT_SECRET=super_secret_jwt_key_society_management_2026_secure
+      - ADMIN_EMAIL=admin@society.com
+      - ADMIN_PASSWORD=Admin@123
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: smart_society_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

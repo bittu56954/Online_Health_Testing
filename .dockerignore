@@ -1,0 +1,7 @@
+node_modules
+React/node_modules
+Backend/node_modules
+React/dist
+.git
+.env
+*.log

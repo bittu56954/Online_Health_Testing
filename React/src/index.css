@@ -1,0 +1,346 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root, [data-theme="light"] {
+  /* Color Palette - Modern Deep Sapphire, Electric Blue, Emerald, Amber, Rose */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #0f172a;
+
+  --accent-cyan: #06b6d4;
+  --accent-indigo: #4f46e5;
+  --accent-purple: #8b5cf6;
+  --accent-rose: #f43f5e;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+
+  --success-bg: #ecfdf5;
+  --success-text: #047857;
+  --success-border: #a7f3d0;
+  --success-solid: #10b981;
+
+  --warning-bg: #fffbeb;
+  --warning-text: #b45309;
+  --warning-border: #fde68a;
+  --warning-solid: #f59e0b;
+
+  --danger-bg: #fef2f2;
+  --danger-text: #b91c1c;
+  --danger-border: #fecaca;
+  --danger-solid: #ef4444;
+
+  --info-bg: #f0f9ff;
+  --info-text: #0369a1;
+  --info-border: #bae6fd;
+  --info-solid: #0ea5e9;
+
+  /* Surfaces & Backgrounds (Light Theme) */
+  --bg-main: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-glass: rgba(255, 255, 255, 0.88);
+  --bg-sidebar: #0b1329;
+  --bg-sidebar-hover: #1e293b;
+  --bg-sidebar-active: #2563eb;
+  --bg-input: #ffffff;
+
+  /* Typography Colors (Light Theme) */
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --text-inverse: #ffffff;
+
+  /* Borders & Radii */
+  --border-light: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --border-focus: #3b82f6;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Elevation Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.1), 0 6px 12px -4px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 24px 38px -6px rgba(15, 23, 42, 0.12), 0 12px 18px -6px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 25px rgba(37, 99, 235, 0.28);
+  --shadow-glow-emerald: 0 0 25px rgba(16, 185, 129, 0.28);
+  --shadow-glow-amber: 0 0 25px rgba(245, 158, 11, 0.28);
+
+  /* Fonts */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --sidebar-width: 270px;
+  --navbar-height: 74px;
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"], .dark-theme {
+  /* Surfaces & Backgrounds (Dark Theme) */
+  --bg-main: #0b0f19;
+  --bg-surface: #1e293b;
+  --bg-surface-elevated: #334155;
+  --bg-surface-glass: rgba(30, 41, 59, 0.88);
+  --bg-sidebar: #070a12;
+  --bg-sidebar-hover: #1e293b;
+  --bg-sidebar-active: #3b82f6;
+  --bg-input: #0f172a;
+
+  /* Typography Colors (Dark Theme) */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --text-inverse: #0f172a;
+
+  /* Borders (Dark Theme) */
+  --border-light: #334155;
+  --border-subtle: #1e293b;
+  --border-focus: #60a5fa;
+
+  /* Elevation Shadows (Dark Theme) */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 24px 40px -6px rgba(0, 0, 0, 0.7);
+
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-text: #34d399;
+  --success-border: rgba(16, 185, 129, 0.3);
+
+  --warning-bg: rgba(245, 158, 11, 0.15);
+  --warning-text: #fbbf24;
+  --warning-border: rgba(245, 158, 11, 0.3);
+
+  --danger-bg: rgba(239, 68, 68, 0.15);
+  --danger-text: #f87171;
+  --danger-border: rgba(239, 68, 68, 0.3);
+
+  --info-bg: rgba(14, 165, 233, 0.15);
+  --info-text: #38bdf8;
+  --info-border: rgba(14, 165, 233, 0.3);
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body {
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  outline: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Glassmorphism & Gradient Utilities */
+.glass-panel {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-light);
+}
+
+.glass-nav {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #0b1329 0%, #0f766e 50%, #0369a1 100%);
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e3a8a 100%);
+}
+
+.gradient-card-1 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.gradient-card-2 {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.gradient-card-3 {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.gradient-card-4 {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+.gradient-card-5 {
+  background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+}
+
+.gradient-card-6 {
+  background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(37, 99, 235, 0.5);
+  }
+}
+
+@keyframes floatAnim {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: floatAnim 4s ease-in-out infinite;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.spinner-primary {
+  border: 3px solid rgba(37, 99, 235, 0.2);
+  border-top-color: var(--primary-600);
+}

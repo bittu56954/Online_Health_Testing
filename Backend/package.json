@@ -1,0 +1,26 @@
+{
+  "name": "mediscan-backend",
+  "version": "1.0.0",
+  "description": "MEDISCAN - Full-Stack Medicine Information Scanner Backend (MERN)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch --watch-path=server.js --watch-path=controllers --watch-path=models --watch-path=routes --watch-path=middleware --watch-path=config --watch-path=utils server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb-memory-server": "^10.1.4",
+    "mongoose": "^8.13.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
+    "sharp": "^0.35.3",
+    "tesseract.js": "^5.1.1"
+  }
+}

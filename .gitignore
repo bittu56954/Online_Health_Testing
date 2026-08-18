@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+**/node_modules/
+Backend/node_modules/
+React/node_modules/
+
+# Production build output
+React/dist/
+dist/
+build/
+
+# Environment variables & secrets (STRICTLY HIDDEN FROM GIT)
+.env
+.env*
+*.env
+**/.env
+**/.env.*
+**/.env*
+!**/.env.example
+
+# Uploads, database & temporary logs
+Backend/uploads/*
+!Backend/uploads/.gitkeep
+Backend/data/
+*.lock
+*.log
+npm-debug.log*
+
+# OS & IDE files
+.DS_Store
+.vscode/
+.idea/

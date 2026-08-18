@@ -1,0 +1,22 @@
+{
+  "name": "mediscan-fullstack",
+  "version": "1.0.0",
+  "description": "MEDISCAN - Full-Stack Medicine Information Scanner Web Application (MERN)",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm run install:all",
+    "install:all": "npm --prefix Backend install && npm --prefix React install",
+    "build": "npm --prefix React run build",
+    "start": "npm --prefix Backend start",
+    "dev:backend": "npm --prefix Backend run dev",
+    "dev:frontend": "npm --prefix React run dev",
+    "dev": "npx --prefix React concurrently -k -p \"[{name}]\" -n \"BACKEND,FRONTEND\" -c \"yellow.bold,cyan.bold\" \"npm --prefix Backend run dev\" \"npm --prefix React run dev\"",
+    "seed": "npm --prefix Backend run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
