@@ -4,9 +4,8 @@
   "description": "MEDISCAN - Full-Stack Medicine Information Scanner Web Application (MERN)",
   "private": true,
   "scripts": {
-    "postinstall": "npm run install:all",
     "install:all": "npm --prefix Backend install && npm --prefix React install",
-    "build": "npm --prefix React run build",
+    "build": "npm --prefix React install && npm --prefix React run build",
     "start": "npm --prefix Backend start",
     "dev:backend": "npm --prefix Backend run dev",
     "dev:frontend": "npm --prefix React run dev",

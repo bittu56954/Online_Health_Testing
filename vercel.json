@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm --prefix React run build",
+  "outputDirectory": "React/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
