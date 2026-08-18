@@ -46,21 +46,21 @@ const Register = () => {
     }
 
     setLoading(true);
-    const result = await registerUser(name, email, password, phone, role);
+    const result = await registerUser(name, email, password, role, phone);
     setLoading(false);
 
-    if (result.success) {
-      showToast('Registration successful! Verification OTP sent to your email.', 'success');
-      navigate('/verify-otp', { state: { email, otpDebug: result.otpDebug } });
+    if (result?.success) {
+      showToast(result.message || 'Registration successful! Verification OTP sent to your email.', 'success');
+      navigate('/verify-otp', { state: { email, message: result.message, otpDebug: result.otpDebug } });
     } else {
-      showToast(result.message || 'Registration failed. Try again.', 'error');
+      showToast(result?.message || 'Registration failed. Try again.', 'error');
     }
   };
 
   return (
     <div className="page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1.5rem' }}>
-        <div style={{ width: '100%', maxWidth: '480px', background: 'var(--bg-surface)', borderRadius: '24px', padding: '2.5rem', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-light)' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+        <div style={{ width: '100%', maxWidth: '480px', background: 'var(--bg-surface)', borderRadius: '24px', padding: '2rem 1.5rem', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-light)' }}>
           
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ width: 58, height: 58, borderRadius: '18px', overflow: 'hidden', border: '2px solid #0d9488', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', boxShadow: '0 6px 20px rgba(2, 132, 199, 0.3)', background: '#0f172a' }}>

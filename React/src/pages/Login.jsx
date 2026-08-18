@@ -25,15 +25,17 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await loginUser(email, password);
-      if (res?.requireOtp) {
-        showToast('Please verify your email with the OTP sent to your inbox.', 'info');
-        navigate('/verify-otp', { state: { email, message: res.message } });
-      } else {
+      if (res?.requiresVerification || res?.requireOtp) {
+        showToast(res.message || 'Please verify your email with the OTP sent to your inbox.', 'info');
+        navigate('/verify-otp', { state: { email, message: res.message, otpDebug: res.otpDebug } });
+      } else if (res?.success) {
         showToast('Login successful! Welcome back.', 'success');
         navigate('/dashboard');
+      } else {
+        showToast(res?.message || 'Login failed. Please check your credentials.', 'error');
       }
     } catch (err) {
-      showToast(err.response?.data?.message || 'Login failed. Please check your credentials.', 'error');
+      showToast(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.', 'error');
     } finally {
       setLoading(false);
     }
@@ -41,8 +43,8 @@ const Login = () => {
 
   return (
     <div className="page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1.5rem' }}>
-        <div style={{ width: '100%', maxWidth: '440px', background: 'var(--bg-surface)', borderRadius: '24px', padding: '2.5rem', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-light)' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+        <div style={{ width: '100%', maxWidth: '440px', background: 'var(--bg-surface)', borderRadius: '24px', padding: '2rem 1.5rem', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-light)' }}>
           
 
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -127,7 +129,7 @@ const Login = () => {
                 boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
-                justify: 'center',
+                justifyContent: 'center',
                 gap: '0.5rem',
                 marginTop: '1.5rem'
               }}

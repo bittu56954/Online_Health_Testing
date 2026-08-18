@@ -110,14 +110,14 @@ const VerifyOTP = () => {
 
   return (
     <div className="page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1.5rem' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
         <div
           style={{
             width: '100%',
             maxWidth: '480px',
             background: 'var(--bg-surface)',
             borderRadius: '24px',
-            padding: '2.5rem',
+            padding: '2rem 1.25rem',
             boxShadow: 'var(--shadow-lg)',
             border: '1px solid var(--border-light)'
           }}
@@ -132,7 +132,7 @@ const VerifyOTP = () => {
                 color: '#ffffff',
                 display: 'inline-flex',
                 alignItems: 'center',
-                justify: 'center',
+                justifyContent: 'center',
                 marginBottom: '1rem',
                 boxShadow: '0 6px 20px rgba(2, 132, 199, 0.3)'
               }}
@@ -182,7 +182,7 @@ const VerifyOTP = () => {
                 Enter 6-Digit OTP Code
               </label>
 
-              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }} onPaste={handlePaste}>
+              <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center', width: '100%' }} onPaste={handlePaste}>
                 {otpDigits.map((digit, index) => (
                   <input
                     key={index}
@@ -194,9 +194,9 @@ const VerifyOTP = () => {
                     onChange={(e) => handleDigitChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     style={{
-                      width: '48px',
-                      height: '56px',
-                      fontSize: '1.4rem',
+                      width: 'clamp(36px, 12vw, 48px)',
+                      height: 'clamp(46px, 14vw, 56px)',
+                      fontSize: 'clamp(1.1rem, 4vw, 1.4rem)',
                       fontWeight: 800,
                       textAlign: 'center',
                       borderRadius: '12px',
@@ -205,6 +205,8 @@ const VerifyOTP = () => {
                       color: 'var(--text-main)',
                       boxShadow: digit ? '0 0 10px rgba(2, 132, 199, 0.2)' : 'none',
                       outline: 'none',
+                      padding: 0,
+                      boxSizing: 'border-box',
                       transition: 'all 0.2s ease'
                     }}
                   />
@@ -250,7 +252,7 @@ const VerifyOTP = () => {
                 transition: 'all 0.25s ease',
                 display: 'flex',
                 alignItems: 'center',
-                justify: 'center',
+                justifyContent: 'center',
                 gap: '0.5rem'
               }}
             >

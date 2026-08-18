@@ -71,8 +71,8 @@ const ForgotPassword = () => {
 
   return (
     <div className="page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1.5rem' }}>
-        <div style={{ width: '100%', maxWidth: '460px', background: 'var(--bg-surface)', borderRadius: '24px', padding: '2.5rem', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-light)' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+        <div style={{ width: '100%', maxWidth: '460px', background: 'var(--bg-surface)', borderRadius: '24px', padding: '2rem 1.25rem', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-light)' }}>
           
           <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
             <div
