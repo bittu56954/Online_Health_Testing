@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm --prefix React run build",
+  "buildCommand": "cd React && npm install && npx vite build",
   "outputDirectory": "React/dist",
   "framework": "vite",
   "rewrites": [

@@ -5,12 +5,24 @@
   "private": true,
   "scripts": {
     "install:all": "npm --prefix Backend install && npm --prefix React install",
-    "build": "npm --prefix React install --include=dev && npm --prefix React run build",
+    "build": "cd React && npm install && npx vite build",
     "start": "npm --prefix Backend start",
     "dev:backend": "npm --prefix Backend run dev",
     "dev:frontend": "npm --prefix React run dev",
     "dev": "npx --prefix React concurrently -k -p \"[{name}]\" -n \"BACKEND,FRONTEND\" -c \"yellow.bold,cyan.bold\" \"npm --prefix Backend run dev\" \"npm --prefix React run dev\"",
     "seed": "npm --prefix Backend run seed"
+  },
+  "dependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.4",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.2.0",
+    "vite": "^8.2.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
