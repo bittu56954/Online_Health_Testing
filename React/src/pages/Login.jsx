@@ -146,7 +146,64 @@ const Login = () => {
             </button>
           </form>
 
-          <div style={{ marginTop: '2rem', textAlign: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '1.5rem' }}>
+          {/* Quick Demo Login Presets */}
+          <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-light)' }}>
+            <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              ⚡ Quick Demo Login (One-Tap Mobile Login)
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+              <button
+                type="button"
+                onClick={() => { setEmail('bittu@gmail.com'); setPassword('123456'); }}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  borderRadius: '20px',
+                  border: '1px solid #0284c7',
+                  background: 'rgba(2, 132, 199, 0.08)',
+                  color: '#0284c7',
+                  cursor: 'pointer'
+                }}
+              >
+                🔑 bittu@gmail.com
+              </button>
+              <button
+                type="button"
+                onClick={() => { setEmail('user@mediscan.com'); setPassword('User@123'); }}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  borderRadius: '20px',
+                  border: '1px solid #0d9488',
+                  background: 'rgba(13, 148, 136, 0.08)',
+                  color: '#0d9488',
+                  cursor: 'pointer'
+                }}
+              >
+                🔑 user@mediscan.com
+              </button>
+              <button
+                type="button"
+                onClick={() => { setEmail('admin@mediscan.com'); setPassword('Admin@123'); }}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  borderRadius: '20px',
+                  border: '1px solid #8b5cf6',
+                  background: 'rgba(139, 92, 246, 0.08)',
+                  color: '#8b5cf6',
+                  cursor: 'pointer'
+                }}
+              >
+                👑 admin@mediscan.com
+              </button>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1.5rem', textAlign: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '1.25rem' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
               Don't have an account yet?{' '}
               <Link to="/register" style={{ color: '#0284c7', fontWeight: 700, textDecoration: 'none' }}>
