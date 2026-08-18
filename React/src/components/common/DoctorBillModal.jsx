@@ -27,15 +27,17 @@ const DoctorBillModal = ({
   featureData = null,
   billType = 'facial' // 'facial', 'medicine', 'predoctor'
 }) => {
-  const { currentUser } = useAuth();
+  const { user, currentUser } = useAuth();
 
   if (!isOpen) return null;
 
-  // Patient Info
-  const patientName = currentUser?.name || currentUser?.fullName || 'Patient (Verified Resident)';
-  const patientEmail = currentUser?.email || 'patient@mediscan-health.org';
-  const patientPhone = currentUser?.phone || currentUser?.mobile || '+91 98765-43210';
-  const invoiceId = scanData?.scanId || medicineData?.batchNumber || 'BILL-' + Math.floor(100000 + Math.random() * 900000);
+  const activeUser = user || currentUser;
+
+  // Patient Info from Login / Registration
+  const patientName = activeUser?.name || activeUser?.fullName || 'Bittu Kumar';
+  const patientEmail = activeUser?.email || 'bittu@gmail.com';
+  const patientPhone = activeUser?.phone || activeUser?.mobile || '+91 98765-43210';
+  const invoiceId = scanData?.scanId || medicineData?.batchNumber || 'FC-' + Math.floor(100000 + Math.random() * 900000);
   const invoiceDate = new Date().toLocaleString('en-US', {
     dateStyle: 'medium',
     timeStyle: 'short'
@@ -78,11 +80,11 @@ const DoctorBillModal = ({
     ];
 
     billingItems = [
-      { desc: 'AI Facial Biometric Visual Biomarker Scan', category: 'Diagnostics', qty: 1, rate: 500, total: 500 },
-      { desc: 'Senior Physician Clinical Assessment & Consultation', category: 'Physician Fee', qty: 1, rate: 1000, total: 1000 },
-      { desc: 'Personalized Rx Treatment & Cure Protocol Formulation', category: 'Therapeutics', qty: 1, rate: 450, total: 450 },
-      { desc: 'Ocular & Vascular Biomarker Risk Profiling', category: 'Lab Profiling', qty: 1, rate: 350, total: 350 },
-      { desc: 'Digital Health Certificate & Prescription Issuance', category: 'Documentation', qty: 1, rate: 200, total: 200 }
+      { desc: 'AI Facial Biometric Visual Biomarker Scan', category: 'Diagnostics', qty: 1, rate: 0, total: 0 },
+      { desc: 'Senior Software Engineer & AI Doctor Clinical Assessment', category: 'Consultation Fee', qty: 1, rate: 0, total: 0 },
+      { desc: 'Personalized Rx Treatment & Cure Protocol Formulation', category: 'Therapeutics', qty: 1, rate: 0, total: 0 },
+      { desc: 'Ocular & Vascular Biomarker Risk Profiling', category: 'Lab Profiling', qty: 1, rate: 0, total: 0 },
+      { desc: 'Digital Health Certificate & Prescription Issuance', category: 'Documentation', qty: 1, rate: 0, total: 0 }
     ];
 
   } else if (billType === 'medicine' && medicineData) {
@@ -118,10 +120,10 @@ const DoctorBillModal = ({
     ];
 
     billingItems = [
-      { desc: `OCR Label Identification & Drug Safety Verification (${medicineData.name})`, category: 'Pharmacy Scan', qty: 1, rate: 400, total: 400 },
-      { desc: 'Pharmacological Mechanism & Drug Interaction Analysis', category: 'Clinical Pharmacology', qty: 1, rate: 600, total: 600 },
-      { desc: 'Clinical Dosage & Administration Guidance', category: 'Physician Advisory', qty: 1, rate: 350, total: 350 },
-      { desc: 'Official Prescription & Medical Bill Verification', category: 'Documentation', qty: 1, rate: 150, total: 150 }
+      { desc: `OCR Label Identification & Drug Safety Verification (${medicineData.name})`, category: 'Pharmacy Scan', qty: 1, rate: 0, total: 0 },
+      { desc: 'Pharmacological Mechanism & Drug Interaction Analysis', category: 'Clinical Pharmacology', qty: 1, rate: 0, total: 0 },
+      { desc: 'Clinical Dosage & Administration Guidance', category: 'Physician Advisory', qty: 1, rate: 0, total: 0 },
+      { desc: 'Official Prescription & Medical Bill Verification', category: 'Documentation', qty: 1, rate: 0, total: 0 }
     ];
 
   } else if (billType === 'predoctor' && featureData) {
@@ -152,18 +154,18 @@ const DoctorBillModal = ({
     ];
 
     billingItems = [
-      { desc: `Pre-Doctor Feature Evaluation (${featureData.title})`, category: 'Clinical Assessment', qty: 1, rate: 600, total: 600 },
-      { desc: 'Differential Diagnostic Triage & Red Flag Screening', category: 'Specialist Advisory', qty: 1, rate: 900, total: 900 },
-      { desc: 'Laboratory Diagnostic Test Order & Prep Protocol', category: 'Lab Services', qty: 1, rate: 400, total: 400 },
-      { desc: 'Official Doctor Medical Consultation Bill', category: 'Documentation', qty: 1, rate: 200, total: 200 }
+      { desc: `Pre-Doctor Feature Evaluation (${featureData.title})`, category: 'Clinical Assessment', qty: 1, rate: 0, total: 0 },
+      { desc: 'Differential Diagnostic Triage & Red Flag Screening', category: 'Specialist Advisory', qty: 1, rate: 0, total: 0 },
+      { desc: 'Laboratory Diagnostic Test Order & Prep Protocol', category: 'Lab Services', qty: 1, rate: 0, total: 0 },
+      { desc: 'Official Doctor Medical Consultation Bill', category: 'Documentation', qty: 1, rate: 0, total: 0 }
     ];
   }
 
-  // Calculate Subtotals
-  const subtotal = billingItems.reduce((sum, item) => sum + item.total, 0);
-  const discount = Math.round(subtotal * 0.10); // 10% wellness discount
-  const gstTax = Math.round((subtotal - discount) * 0.05); // 5% GST
-  const grandTotal = subtotal - discount + gstTax;
+  // All amounts 0 - 100% Free of Cost
+  const subtotal = 0;
+  const discount = 0;
+  const gstTax = 0;
+  const grandTotal = 0;
 
   const handlePrint = () => {
     window.print();
@@ -344,13 +346,13 @@ const DoctorBillModal = ({
                 ATTENDING PHYSICIAN / DIAGNOSTICIAN
               </div>
               <strong style={{ fontSize: '1.05rem', color: '#0f172a', display: 'block' }}>
-                Dr. Arvind K. Sharma, M.D., D.N.B.
+                Er. Bittu Kumar
               </strong>
               <span style={{ fontSize: '0.82rem', color: '#475569', display: 'block', marginTop: '2px' }}>
-                Senior Consultant Physician & AI Diagnostics Lead
+                Software Engineer & AI Diagnostics Lead
               </span>
               <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', marginTop: '2px' }}>
-                Medical Council Reg No: MCI-2016-88392
+                CSVTU University &bull; Reg No: CSVTU-SE-2026-88392
               </span>
             </div>
 
@@ -366,7 +368,7 @@ const DoctorBillModal = ({
                 Contact: {patientPhone} | Email: {patientEmail}
               </span>
               <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', marginTop: '2px' }}>
-                Age / Gender: 34 Yrs / Male &bull; Status: Outpatient Consultation
+                Status: Verified Resident Patient &bull; Consultation: Telehealth AI Online
               </span>
             </div>
           </div>
@@ -518,7 +520,7 @@ const DoctorBillModal = ({
                     <td style={{ padding: '0.65rem 0.85rem', fontWeight: 700, color: '#0f172a' }}>{item.desc}</td>
                     <td style={{ padding: '0.65rem 0.85rem', color: '#0284c7', fontSize: '0.82rem', fontWeight: 600 }}>{item.category}</td>
                     <td style={{ padding: '0.65rem 0.85rem', textAlign: 'center', color: '#475569' }}>{item.qty}</td>
-                    <td style={{ padding: '0.65rem 0.85rem', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{item.total.toLocaleString()}</td>
+                    <td style={{ padding: '0.65rem 0.85rem', textAlign: 'right', fontWeight: 700, color: '#059669' }}>₹0 (Free of Cost)</td>
                   </tr>
                 ))}
               </tbody>
@@ -528,29 +530,29 @@ const DoctorBillModal = ({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', background: '#f8fafc', padding: '1.25rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
               <div>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: '#ecfdf5', color: '#059669', padding: '0.4rem 0.85rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid #a7f3d0' }}>
-                  <ShieldCheck size={16} /> PAYMENT STATUS: PAID ONLINE (100% SUCCESSFUL)
+                  <ShieldCheck size={16} /> PAYMENT STATUS: PAID ONLINE (100% SUCCESSFUL - FREE CONSULTATION)
                 </div>
                 <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0.5rem 0 0 0' }}>
-                  Payment Method: Smart Medical Care Telehealth Gateway &bull; Transaction ID: TXN-{Math.floor(10000000 + Math.random() * 90000000)}
+                  Payment Method: Smart Medical Care Telehealth Online Gateway &bull; Transaction ID: TXN-ONLINE-2026-99482
                 </p>
               </div>
 
-              <div style={{ minWidth: '240px', textAlign: 'right' }}>
+              <div style={{ minWidth: '260px', textAlign: 'right' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>
                   <span>Subtotal Amount:</span>
-                  <strong>₹{subtotal.toLocaleString()}</strong>
+                  <strong style={{ color: '#059669' }}>₹0 (Free of Cost)</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#16a34a', marginBottom: '0.25rem' }}>
-                  <span>Wellness Coverage (10%):</span>
-                  <strong>-₹{discount.toLocaleString()}</strong>
+                  <span>Wellness Coverage (100%):</span>
+                  <strong>₹0</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem' }}>
-                  <span>Healthcare GST Tax (5%):</span>
-                  <strong>+₹{gstTax.toLocaleString()}</strong>
+                  <span>Healthcare GST Tax (0%):</span>
+                  <strong>₹0</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 900, color: '#0284c7', borderTop: '2px solid #cbd5e1', paddingTop: '0.4rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 900, color: '#059669', borderTop: '2px solid #cbd5e1', paddingTop: '0.4rem' }}>
                   <span>Total Amount Paid:</span>
-                  <span>₹{grandTotal.toLocaleString()}</span>
+                  <span>₹0 (FREE OF COST)</span>
                 </div>
               </div>
             </div>
@@ -560,22 +562,23 @@ const DoctorBillModal = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '2px dashed #e2e8f0', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
             <div style={{ fontSize: '0.78rem', color: '#64748b', maxWidth: '420px', lineHeight: 1.5 }}>
               <strong style={{ color: '#0f172a', display: 'block', marginBottom: '2px' }}>Legal Medical Disclaimer:</strong>
-              This bill & prescription report is digitally issued by Smart Medical Care Telehealth & Diagnostic System. It is valid for medical insurance reimbursement and doctor consultations.
+              This bill & prescription report is digitally issued by Er. Bittu Kumar (Software Engineer, CSVTU University) under Smart Medical Care AI Telehealth & Diagnostic System. It is valid for medical reference and insurance records.
             </div>
 
-            <div style={{ textAlign: 'center', minWidth: '220px' }}>
+            <div style={{ textAlign: 'center', minWidth: '240px' }}>
               {/* Doctor Stamp Graphic */}
               <div style={{ display: 'inline-block', border: '2px dashed #0284c7', padding: '0.4rem 0.8rem', borderRadius: '12px', background: '#f0f9ff', color: '#0284c7', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                <Award size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> SMART MEDICAL CARE VERIFIED CLINICAL SEAL
+                <Award size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> SMART MEDICAL CARE VERIFIED SEAL &bull; CSVTU UNIVERSITY
               </div>
               
-              <div style={{ fontFamily: "'Brush Script MT', 'Dancing Script', cursive", fontSize: '1.4rem', fontWeight: 'bold', color: '#1e3a8a', fontStyle: 'italic', margin: '2px 0' }}>
-                Dr. A. K. Sharma
+              <div style={{ fontFamily: "'Brush Script MT', 'Dancing Script', cursive", fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a', fontStyle: 'italic', margin: '2px 0' }}>
+                Er. Bittu Kumar
               </div>
-              <div style={{ borderTop: '1.5px solid #0f172a', paddingTop: '4px', fontSize: '0.8rem', fontWeight: 800, color: '#0f172a' }}>
-                Dr. Arvind K. Sharma (M.D. Medicine)
+              <div style={{ borderTop: '1.5px solid #0f172a', paddingTop: '4px', fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>
+                Er. Bittu Kumar
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Authorized Medical Practitioner</div>
+              <div style={{ fontSize: '0.76rem', color: '#0284c7', fontWeight: 700 }}>Software Engineer</div>
+              <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>CSVTU University</div>
             </div>
           </div>
 
