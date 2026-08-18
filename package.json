@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "install:all": "npm --prefix Backend install && npm --prefix React install",
-    "build": "npm --prefix React install && npm --prefix React run build",
+    "build": "npm --prefix React install --include=dev && npm --prefix React run build",
     "start": "npm --prefix Backend start",
     "dev:backend": "npm --prefix Backend run dev",
     "dev:frontend": "npm --prefix React run dev",
