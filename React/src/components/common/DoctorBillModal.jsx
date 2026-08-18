@@ -168,7 +168,54 @@ const DoctorBillModal = ({
   const grandTotal = 0;
 
   const handlePrint = () => {
-    window.print();
+    const printElement = document.getElementById('printable-doctor-bill');
+    if (!printElement) {
+      window.print();
+      return;
+    }
+
+    try {
+      const printWindow = window.open('', '_blank', 'width=900,height=800');
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Medical_Bill_${invoiceId}</title>
+              <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+                * { box-sizing: border-box; }
+                body {
+                  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                  margin: 20px;
+                  color: #0f172a;
+                  background: #ffffff;
+                }
+                @page {
+                  size: A4 portrait;
+                  margin: 10mm;
+                }
+                .no-print { display: none !important; }
+              </style>
+            </head>
+            <body>
+              ${printElement.innerHTML}
+              <script>
+                window.onload = function() {
+                  window.print();
+                  setTimeout(function() { window.close(); }, 800);
+                };
+              </script>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      } else {
+        window.print();
+      }
+    } catch (err) {
+      window.print();
+    }
   };
 
   return (
@@ -189,23 +236,52 @@ const DoctorBillModal = ({
     >
       <style>{`
         @media print {
-          body * {
-            visibility: hidden !important;
+          @page {
+            size: A4 portrait;
+            margin: 10mm;
           }
-          #printable-doctor-bill, #printable-doctor-bill * {
-            visibility: visible !important;
-          }
-          #printable-doctor-bill {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 20px !important;
+          html, body {
             background: #ffffff !important;
             color: #0f172a !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: auto !important;
+            overflow: visible !important;
+          }
+          body > *:not(.doctor-bill-modal-overlay) {
+            display: none !important;
+          }
+          .doctor-bill-modal-overlay {
+            position: static !important;
+            background: #ffffff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+            display: block !important;
+            backdrop-filter: none !important;
+          }
+          .doctor-bill-modal-content {
+            position: static !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: none !important;
+            height: auto !important;
             box-shadow: none !important;
             border: none !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+            display: block !important;
+          }
+          #printable-doctor-bill {
+            position: static !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: block !important;
           }
           .no-print {
             display: none !important;
