@@ -25,7 +25,8 @@ import {
   Stethoscope,
   Activity,
   Filter,
-  Check
+  Check,
+  RefreshCw
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import FounderLeadershipSection from '../components/common/FounderLeadershipSection';
@@ -35,8 +36,11 @@ import DynamicPageHeader from '../components/common/DynamicPageHeader';
 const Home = () => {
   const { isAuthenticated } = useAuth();
 
-  // Dynamic States
-  const [heroTab, setHeroTab] = useState('ocr'); // 'ocr' | 'predoctor' | 'expiry' | 'cabinet'
+  // Dynamic Loading States for Title & Hero
+  const [isTitleLoading, setIsTitleLoading] = useState(true);
+
+  // Dynamic Feature States
+  const [heroTab, setHeroTab] = useState('ocr'); // 'ocr' | 'predoctor' | 'expiry'
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   
@@ -45,15 +49,31 @@ const Home = () => {
   const [medicinesCount, setMedicinesCount] = useState(4800);
   const [checkersCount, setCheckersCount] = useState(80);
 
-  // Animated counters on mount
+  // Trigger 1.5 - 2 second dynamic title load on mount
   useEffect(() => {
+    setIsTitleLoading(true);
     const timer = setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500); // 1.5 seconds dynamic loading delay
+
+    const counterTimer = setTimeout(() => {
       setScansCount(1450);
       setMedicinesCount(5200);
       setCheckersCount(100);
-    }, 1200);
-    return () => clearTimeout(timer);
+    }, 1600);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(counterTimer);
+    };
   }, []);
+
+  const triggerTitleReload = () => {
+    setIsTitleLoading(true);
+    setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500);
+  };
 
   // Sample verified medicine dataset for live dynamic search & filter
   const sampleMedicines = [
@@ -85,55 +105,88 @@ const Home = () => {
         pageSubtitle="Real-time Medicine Identification, Expiry Monitoring & Pre-Doctor Checkers"
         syncText="✨ Live System Engine Synced with MongoDB & OCR Scanner"
         badgeText="LIVE HOME ENGINE ACTIVE"
+        onRefresh={triggerTitleReload}
       />
 
-      {/* HERO SECTION */}
+      {/* HERO SECTION WITH DYNAMIC 1.5S TITLE LOADER */}
       <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0f766e 50%, #0369a1 100%)', color: '#ffffff', padding: '4.5rem 1.5rem 5.5rem 1.5rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem', alignItems: 'center' }}>
+          
+          {/* Left Hero Content with Dynamic 1.5s Skeleton & Title Reveal */}
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '0.45rem 1.1rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: 600, color: '#5eead4', marginBottom: '1.5rem' }}>
-              <Sparkles size={16} /> Intelligent MERN Medicine Identification Platform
-            </div>
-            <h1 style={{ fontSize: 'calc(2.3rem + 1.2vw)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-1px', marginBottom: '1.25rem', color: '#ffffff' }}>
-              Instant & Reliable <br />
-              <span style={{ background: 'linear-gradient(90deg, #2dd4bf, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Medicine Identification
-              </span>
-            </h1>
-            <p style={{ fontSize: '1.15rem', lineHeight: 1.65, color: '#e2e8f0', marginBottom: '2.25rem', maxWidth: '580px' }}>
-              Scan any medicine label or strip using OCR intelligence. Instantly extract generic names, dosage, expiry dates, common uses, side effects, and critical safety warnings.
-            </p>
+            {isTitleLoading ? (
+              /* DYNAMIC TITLE LOADING SKELETON (1.5 SECONDS) */
+              <div style={{ padding: '0.5rem 0' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255, 255, 255, 0.25)', padding: '0.45rem 1.1rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.5rem' }}>
+                  <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                  <span>Loading Dynamic Title Engine (1.5s)...</span>
+                </div>
 
-            {/* Dynamic Counter Badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2rem' }}>
-              <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
-                <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#5eead4', display: 'block' }}>{scansCount.toLocaleString()}+</span>
-                <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scans Processed</span>
-              </div>
-              <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
-                <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', display: 'block' }}>{medicinesCount.toLocaleString()}+</span>
-                <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Indexed Medicines</span>
-              </div>
-              <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
-                <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4ade80', display: 'block' }}>{checkersCount}</span>
-                <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pre-Doctor Checks</span>
-              </div>
-            </div>
+                {/* Shimmer Skeletons for Title */}
+                <div className="dynamic-title-skeleton" style={{ height: '54px', width: '92%', marginBottom: '1rem' }} />
+                <div className="dynamic-title-skeleton" style={{ height: '46px', width: '75%', marginBottom: '1.5rem' }} />
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-              <Link
-                to={isAuthenticated ? "/scan" : "/login"}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: '#0d9488', color: '#ffffff', fontWeight: 800, padding: '1rem 2rem', borderRadius: '12px', textDecoration: 'none', boxShadow: '0 8px 25px rgba(13, 148, 136, 0.4)', fontSize: '1rem' }}
-              >
-                <ScanLine size={22} /> Scan Medicine Now <ArrowRight size={18} />
-              </Link>
-              <Link
-                to="/pre-doctor-checker"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.15)', color: '#ffffff', fontWeight: 700, padding: '1rem 1.75rem', borderRadius: '12px', textDecoration: 'none', border: '1px solid rgba(255, 255, 255, 0.3)', fontSize: '1rem' }}
-              >
-                <Stethoscope size={20} color="#5eead4" /> 100 Pre-Doctor Checkers
-              </Link>
-            </div>
+                {/* Shimmer Skeletons for Subtitle */}
+                <div className="dynamic-title-skeleton" style={{ height: '22px', width: '85%', marginBottom: '0.6rem' }} />
+                <div className="dynamic-title-skeleton" style={{ height: '22px', width: '60%', marginBottom: '2.5rem' }} />
+
+                {/* Skeleton Buttons */}
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div className="dynamic-title-skeleton" style={{ height: '52px', width: '210px', borderRadius: '12px' }} />
+                  <div className="dynamic-title-skeleton" style={{ height: '52px', width: '220px', borderRadius: '12px' }} />
+                </div>
+              </div>
+            ) : (
+              /* DYNAMIC TITLE REVEALED AFTER 1.5s DELAY */
+              <div className="animate-title-reveal">
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '0.45rem 1.1rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: 600, color: '#5eead4', marginBottom: '1.5rem' }}>
+                  <Sparkles size={16} /> Intelligent MERN Medicine Identification Platform
+                </div>
+                
+                {/* HERO TITLE */}
+                <h1 style={{ fontSize: 'calc(2.3rem + 1.2vw)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-1px', marginBottom: '1.25rem', color: '#ffffff' }}>
+                  Instant & Reliable <br />
+                  <span style={{ background: 'linear-gradient(90deg, #2dd4bf, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    Medicine Identification
+                  </span>
+                </h1>
+
+                <p style={{ fontSize: '1.15rem', lineHeight: 1.65, color: '#e2e8f0', marginBottom: '2.25rem', maxWidth: '580px' }}>
+                  Scan any medicine label or strip using OCR intelligence. Instantly extract generic names, dosage, expiry dates, common uses, side effects, and critical safety warnings.
+                </p>
+
+                {/* Dynamic Counter Badges */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2rem' }}>
+                  <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
+                    <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#5eead4', display: 'block' }}>{scansCount.toLocaleString()}+</span>
+                    <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scans Processed</span>
+                  </div>
+                  <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
+                    <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', display: 'block' }}>{medicinesCount.toLocaleString()}+</span>
+                    <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Indexed Medicines</span>
+                  </div>
+                  <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
+                    <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4ade80', display: 'block' }}>{checkersCount}</span>
+                    <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pre-Doctor Checks</span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                  <Link
+                    to={isAuthenticated ? "/scan" : "/login"}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: '#0d9488', color: '#ffffff', fontWeight: 800, padding: '1rem 2rem', borderRadius: '12px', textDecoration: 'none', boxShadow: '0 8px 25px rgba(13, 148, 136, 0.4)', fontSize: '1rem' }}
+                  >
+                    <ScanLine size={22} /> Scan Medicine Now <ArrowRight size={18} />
+                  </Link>
+                  <Link
+                    to="/pre-doctor-checker"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.15)', color: '#ffffff', fontWeight: 700, padding: '1rem 1.75rem', borderRadius: '12px', textDecoration: 'none', border: '1px solid rgba(255, 255, 255, 0.3)', fontSize: '1rem' }}
+                  >
+                    <Stethoscope size={20} color="#5eead4" /> 100 Pre-Doctor Checkers
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Interactive Dynamic Preview Scanner Box with Tabs */}

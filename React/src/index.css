@@ -344,3 +344,31 @@ input:focus, select:focus, textarea:focus {
   border: 3px solid rgba(37, 99, 235, 0.2);
   border-top-color: var(--primary-600);
 }
+
+@keyframes shimmerPulse {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.dynamic-title-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 25%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: shimmerPulse 1.5s infinite ease-in-out;
+  border-radius: 12px;
+}
+
+@keyframes titleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-title-reveal {
+  animation: titleReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

@@ -37,7 +37,8 @@ import {
   Mail,
   PhoneCall,
   Code,
-  Layers3
+  Layers3,
+  RefreshCw
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import FounderLeadershipSection from '../components/common/FounderLeadershipSection';
@@ -45,6 +46,10 @@ import ProjectUserGuideSection from '../components/common/ProjectUserGuideSectio
 import DynamicPageHeader from '../components/common/DynamicPageHeader';
 
 const About = () => {
+  // Dynamic Title Loading State
+  const [isTitleLoading, setIsTitleLoading] = useState(true);
+
+  // Dynamic Architecture & FAQ States
   const [activeTab, setActiveTab] = useState('frontend');
   const [openFaq, setOpenFaq] = useState(null);
   const [faqSearch, setFaqSearch] = useState('');
@@ -53,13 +58,30 @@ const About = () => {
   const [checkersStat, setCheckersStat] = useState(80);
   const [accuracyStat, setAccuracyStat] = useState(95.0);
 
+  // Trigger 1.5 - 2 second dynamic title load on mount
   useEffect(() => {
+    setIsTitleLoading(true);
     const timer = setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500); // 1.5 seconds dynamic loading delay
+
+    const statsTimer = setTimeout(() => {
       setCheckersStat(100);
       setAccuracyStat(99.2);
-    }, 1200);
-    return () => clearTimeout(timer);
+    }, 1600);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(statsTimer);
+    };
   }, []);
+
+  const triggerTitleReload = () => {
+    setIsTitleLoading(true);
+    setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500);
+  };
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -125,36 +147,69 @@ const About = () => {
         pageSubtitle="Explore Full-Stack MERN Stack Engineering, Regulatory Safety & Founder Leadership"
         syncText="✨ About Engine Synced with System Specs, Regulatory Protocols & Leadership Data"
         badgeText="LIVE ARCHITECTURE SYNC ACTIVE"
+        onRefresh={triggerTitleReload}
       />
 
-      {/* 2. HERO HEADER BANNER */}
+      {/* 2. HERO HEADER BANNER WITH DYNAMIC 1.5S TITLE LOADER */}
       <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0d9488 55%, #0284c7 100%)', color: '#ffffff', padding: '5rem 1.5rem 6rem 1.5rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', padding: '0.45rem 1.25rem', borderRadius: '30px', fontSize: '0.88rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.5rem' }}>
-            <Sparkles size={18} /> Empowering Global Pharmaceutical Literacy & Safety
-          </div>
-          <h1 style={{ fontSize: 'calc(2.4rem + 1.2vw)', fontWeight: 800, margin: 0, letterSpacing: '-1px', lineHeight: 1.15, color: '#ffffff' }}>
-            About Smart Medical Care Platform
-          </h1>
-          <p style={{ fontSize: '1.2rem', color: '#e0f2fe', marginTop: '1rem', lineHeight: 1.7, maxWidth: '850px', margin: '1rem auto 0 auto' }}>
-            Smart Medical Care is an advanced MERN-stack pharmaceutical recognition, expiration monitoring, and patient safety portal. We bridge the gap between complex prescription packaging and clear, actionable digital health intelligence.
-          </p>
+          
+          {isTitleLoading ? (
+            /* DYNAMIC TITLE LOADING SKELETON (1.5 SECONDS) */
+            <div style={{ padding: '1rem 0', maxWidth: '850px', margin: '0 auto' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', padding: '0.45rem 1.25rem', borderRadius: '30px', fontSize: '0.88rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.5rem' }}>
+                <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                <span>Loading Platform Title & Architecture Specs (1.5s)...</span>
+              </div>
 
-          {/* Dynamic Stat Badges Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem', marginTop: '3.5rem', textAlign: 'left' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', padding: '1.25rem', borderRadius: '16px' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#5eead4' }}>{checkersStat}</div>
-              <div style={{ fontSize: '0.82rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pre-Doctor Checkers</div>
+              {/* Shimmer Skeleton for Main Title */}
+              <div className="dynamic-title-skeleton" style={{ height: '58px', width: '80%', margin: '0 auto 1.5rem auto' }} />
+
+              {/* Shimmer Skeleton for Subtitle */}
+              <div className="dynamic-title-skeleton" style={{ height: '24px', width: '90%', margin: '0 auto 0.8rem auto' }} />
+              <div className="dynamic-title-skeleton" style={{ height: '24px', width: '65%', margin: '0 auto 2.5rem auto' }} />
+
+              {/* Skeleton Grid for Badges */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem', maxWidth: '700px', margin: '0 auto' }}>
+                <div className="dynamic-title-skeleton" style={{ height: '80px', borderRadius: '16px' }} />
+                <div className="dynamic-title-skeleton" style={{ height: '80px', borderRadius: '16px' }} />
+                <div className="dynamic-title-skeleton" style={{ height: '80px', borderRadius: '16px' }} />
+              </div>
             </div>
-            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', padding: '1.25rem', borderRadius: '16px' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#38bdf8' }}>{accuracyStat}%</div>
-              <div style={{ fontSize: '0.82rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>OCR Accuracy</div>
+          ) : (
+            /* DYNAMIC TITLE REVEALED AFTER 1.5s DELAY */
+            <div className="animate-title-reveal">
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', padding: '0.45rem 1.25rem', borderRadius: '30px', fontSize: '0.88rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.5rem' }}>
+                <Sparkles size={18} /> Empowering Global Pharmaceutical Literacy & Safety
+              </div>
+
+              {/* ABOUT HERO TITLE */}
+              <h1 style={{ fontSize: 'calc(2.4rem + 1.2vw)', fontWeight: 800, margin: 0, letterSpacing: '-1px', lineHeight: 1.15, color: '#ffffff' }}>
+                About Smart Medical Care Platform
+              </h1>
+
+              <p style={{ fontSize: '1.2rem', color: '#e0f2fe', marginTop: '1rem', lineHeight: 1.7, maxWidth: '850px', margin: '1rem auto 0 auto' }}>
+                Smart Medical Care is an advanced MERN-stack pharmaceutical recognition, expiration monitoring, and patient safety portal. We bridge the gap between complex prescription packaging and clear, actionable digital health intelligence.
+              </p>
+
+              {/* Dynamic Stat Badges Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem', marginTop: '3.5rem', textAlign: 'left' }}>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', padding: '1.25rem', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#5eead4' }}>{checkersStat}</div>
+                  <div style={{ fontSize: '0.82rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pre-Doctor Checkers</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', padding: '1.25rem', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#38bdf8' }}>{accuracyStat}%</div>
+                  <div style={{ fontSize: '0.82rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>OCR Accuracy</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', padding: '1.25rem', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#a7f3d0' }}>10 Domains</div>
+                  <div style={{ fontSize: '0.82rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Pre-Checks</div>
+                </div>
+              </div>
             </div>
-            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', padding: '1.25rem', borderRadius: '16px' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#a7f3d0' }}>10 Domains</div>
-              <div style={{ fontSize: '0.82rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Clinical Pre-Checks</div>
-            </div>
-          </div>
+          )}
+
         </div>
       </section>
 
