@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   PRE_DOCTOR_CATEGORIES,
@@ -27,10 +27,12 @@ import {
   Info,
   ShieldCheck,
   Zap,
-  Filter
+  Filter,
+  RefreshCw
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import DoctorBillModal from '../components/common/DoctorBillModal';
+import DynamicPageHeader from '../components/common/DynamicPageHeader';
 
 // Helper icon resolver
 const getCategoryIcon = (iconName, size = 20, color = 'currentColor') => {
@@ -50,12 +52,30 @@ const getCategoryIcon = (iconName, size = 20, color = 'currentColor') => {
 };
 
 const PreDoctorChecker = () => {
+  const [isTitleLoading, setIsTitleLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFeature, setActiveFeature] = useState(null);
   const [formData, setFormData] = useState({});
   const [assessmentResult, setAssessmentResult] = useState(null);
   const [showDoctorBill, setShowDoctorBill] = useState(false);
+
+  // Trigger 1.5 - 2 second dynamic title load on mount
+  useEffect(() => {
+    setIsTitleLoading(true);
+    const timer = setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500); // 1.5 seconds dynamic loading delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const triggerTitleReload = () => {
+    setIsTitleLoading(true);
+    setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500);
+  };
 
   // Filter features
   const filteredFeatures = useMemo(() => {
@@ -121,34 +141,75 @@ const PreDoctorChecker = () => {
 
   return (
     <div className="pre-doctor-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
-      {/* 1. HERO BANNER */}
+      
+      {/* 1. DYNAMIC TOP HEADER BANNER (1-2 Sec Active Sync) */}
+      <DynamicPageHeader
+        pageTitle="Smart Medical Care Pre-Doctor Suite"
+        pageSubtitle="100 Evidence-Based Clinical Checkers Across 10 Medical Specialization Domains"
+        syncText="✨ Clinical Suite Synced with Triage Matrix, Red Flag Engine & Lab Guidance"
+        badgeText="LIVE CLINICAL SUITE ACTIVE"
+        onRefresh={triggerTitleReload}
+      />
+
+      {/* 2. HERO BANNER WITH DYNAMIC 1.5S TITLE LOADER */}
       <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0284c7 50%, #0d9488 100%)', color: '#ffffff', padding: '4rem 1.5rem 5rem 1.5rem', textAlign: 'center', position: 'relative' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', padding: '0.5rem 1.25rem', borderRadius: '30px', fontSize: '0.88rem', fontWeight: 700, color: '#38bdf8', marginBottom: '1.25rem' }}>
-            <Stethoscope size={18} /> Smart Medical Care Pre-Doctor Clinical Suite (100 Verified Features)
-          </div>
-          <h1 style={{ fontSize: 'calc(2.2rem + 1vw)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px', lineHeight: 1.15, color: '#ffffff' }}>
-            100 Pre-Doctor Health & Medicine Checkers
-          </h1>
-          <p style={{ fontSize: '1.15rem', color: '#e0f2fe', marginTop: '1rem', maxWidth: '850px', margin: '1rem auto 0 auto', lineHeight: 1.6 }}>
-            Run evidence-based clinical assessments before visiting your physician. Obtain doctor-grade triage analysis, red flag warnings, recommended lab tests, pre-appointment preparation steps, and high-yield questions for your doctor.
-          </p>
+          
+          {isTitleLoading ? (
+            /* DYNAMIC TITLE LOADING SKELETON (1.5 SECONDS) */
+            <div style={{ padding: '1rem 0', maxWidth: '850px', margin: '0 auto' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', padding: '0.5rem 1.25rem', borderRadius: '30px', fontSize: '0.88rem', fontWeight: 700, color: '#38bdf8', marginBottom: '1.25rem' }}>
+                <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                <span>Loading 100 Clinical Pre-Doctor Tools (1.5s)...</span>
+              </div>
 
-          {/* Quick Stats Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '3rem', textAlign: 'left' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-              <div style={{ fontSize: '2rem', fontWeight: 800, color: '#38bdf8' }}>100</div>
-              <div style={{ fontSize: '0.82rem', color: '#e2e8f0', textTransform: 'uppercase', fontWeight: 600 }}>Clinical Features</div>
+              {/* Shimmer Skeleton for Main Title */}
+              <div className="dynamic-title-skeleton" style={{ height: '56px', width: '80%', margin: '0 auto 1.25rem auto' }} />
+
+              {/* Shimmer Skeleton for Subtitle */}
+              <div className="dynamic-title-skeleton" style={{ height: '24px', width: '90%', margin: '0 auto 0.6rem auto' }} />
+              <div className="dynamic-title-skeleton" style={{ height: '24px', width: '65%', margin: '0 auto 2.5rem auto' }} />
+
+              {/* Skeleton Grid for Quick Stats */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', maxWidth: '750px', margin: '0 auto' }}>
+                <div className="dynamic-title-skeleton" style={{ height: '76px', borderRadius: '16px' }} />
+                <div className="dynamic-title-skeleton" style={{ height: '76px', borderRadius: '16px' }} />
+                <div className="dynamic-title-skeleton" style={{ height: '76px', borderRadius: '16px' }} />
+              </div>
             </div>
-            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-              <div style={{ fontSize: '2rem', fontWeight: 800, color: '#5eead4' }}>10</div>
-              <div style={{ fontSize: '0.82rem', color: '#e2e8f0', textTransform: 'uppercase', fontWeight: 600 }}>Medical Domains</div>
+          ) : (
+            /* DYNAMIC TITLE REVEALED AFTER 1.5s DELAY */
+            <div className="animate-title-reveal">
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', padding: '0.5rem 1.25rem', borderRadius: '30px', fontSize: '0.88rem', fontWeight: 700, color: '#38bdf8', marginBottom: '1.25rem' }}>
+                <Stethoscope size={18} /> Smart Medical Care Pre-Doctor Clinical Suite (100 Verified Features)
+              </div>
+              
+              <h1 style={{ fontSize: 'calc(2.2rem + 1vw)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px', lineHeight: 1.15, color: '#ffffff' }}>
+                100 Pre-Doctor Health & Medicine Checkers
+              </h1>
+              
+              <p style={{ fontSize: '1.15rem', color: '#e0f2fe', marginTop: '1rem', maxWidth: '850px', margin: '1rem auto 0 auto', lineHeight: 1.6 }}>
+                Run evidence-based clinical assessments before visiting your physician. Obtain doctor-grade triage analysis, red flag warnings, recommended lab tests, pre-appointment preparation steps, and high-yield questions for your doctor.
+              </p>
+
+              {/* Quick Stats Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '3rem', textAlign: 'left' }}>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#38bdf8' }}>100</div>
+                  <div style={{ fontSize: '0.82rem', color: '#e2e8f0', textTransform: 'uppercase', fontWeight: 600 }}>Clinical Features</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#5eead4' }}>10</div>
+                  <div style={{ fontSize: '0.82rem', color: '#e2e8f0', textTransform: 'uppercase', fontWeight: 600 }}>Medical Domains</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#fcd34d' }}>100%</div>
+                  <div style={{ fontSize: '0.82rem', color: '#e2e8f0', textTransform: 'uppercase', fontWeight: 600 }}>Doctor-Level Guidance</div>
+                </div>
+              </div>
             </div>
-            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-              <div style={{ fontSize: '2rem', fontWeight: 800, color: '#fcd34d' }}>100%</div>
-              <div style={{ fontSize: '0.82rem', color: '#e2e8f0', textTransform: 'uppercase', fontWeight: 600 }}>Doctor-Level Guidance</div>
-            </div>
-          </div>
+          )}
+
         </div>
       </section>
 

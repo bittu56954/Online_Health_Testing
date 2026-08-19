@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Mail,
   Phone,
@@ -12,13 +12,18 @@ import {
   Sparkles,
   MessageSquare,
   Building,
-  HeartPulse
+  HeartPulse,
+  RefreshCw,
+  Zap
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import { useToast } from '../context/ToastContext';
+import DynamicPageHeader from '../components/common/DynamicPageHeader';
 
 const Contact = () => {
   const { showToast } = useToast();
+  const [isTitleLoading, setIsTitleLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,6 +34,23 @@ const Contact = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Trigger 1.5 - 2 second dynamic title load on mount
+  useEffect(() => {
+    setIsTitleLoading(true);
+    const timer = setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500); // 1.5 seconds dynamic loading delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const triggerTitleReload = () => {
+    setIsTitleLoading(true);
+    setTimeout(() => {
+      setIsTitleLoading(false);
+    }, 1500);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,18 +72,53 @@ const Contact = () => {
   return (
     <div className="page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
       
-      {/* HERO BANNER */}
+      {/* 1. DYNAMIC TOP HEADER BANNER (1-2 Sec Active Sync) */}
+      <DynamicPageHeader
+        pageTitle="Smart Medical Care Helpdesk & Support Portal"
+        pageSubtitle="Connect with Technical Support, Regulatory Desk & Pharmacy Engineers"
+        syncText="✨ Support Engine Synced with Live Helpdesk Queue & Technical Specs"
+        badgeText="LIVE HELPDESK ACTIVE"
+        onRefresh={triggerTitleReload}
+      />
+
+      {/* 2. HERO BANNER WITH DYNAMIC 1.5S TITLE LOADER */}
       <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0d9488 50%, #0284c7 100%)', color: '#ffffff', padding: '4.5rem 1.5rem 5.5rem 1.5rem', textAlign: 'center' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', padding: '0.4rem 1.1rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.25rem' }}>
-            <Sparkles size={16} /> We Are Here to Assist You
-          </div>
-          <h1 style={{ fontSize: 'calc(2.3rem + 1vw)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px', color: '#ffffff' }}>
-            Get in Touch with Smart Medical Care
-          </h1>
-          <p style={{ fontSize: '1.15rem', color: '#e0f2fe', marginTop: '0.75rem', lineHeight: 1.6, maxWidth: '700px', margin: '0.75rem auto 0 auto' }}>
-            Have questions about OCR scanner performance, technical integration, or pharmaceutical data indexing? Reach out to our technical support team.
-          </p>
+          
+          {isTitleLoading ? (
+            /* DYNAMIC TITLE LOADING SKELETON (1.5 SECONDS) */
+            <div style={{ padding: '1rem 0', maxWidth: '800px', margin: '0 auto' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', padding: '0.4rem 1.1rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.25rem' }}>
+                <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                <span>Loading Support Portal Title (1.5s)...</span>
+              </div>
+
+              {/* Shimmer Skeleton for Main Title */}
+              <div className="dynamic-title-skeleton" style={{ height: '54px', width: '85%', margin: '0 auto 1.25rem auto' }} />
+
+              {/* Shimmer Skeleton for Subtitle */}
+              <div className="dynamic-title-skeleton" style={{ height: '22px', width: '90%', margin: '0 auto 0.6rem auto' }} />
+              <div className="dynamic-title-skeleton" style={{ height: '22px', width: '65%', margin: '0 auto 1.5rem auto' }} />
+
+              <div style={{ fontSize: '0.88rem', color: '#5eead4', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <Zap size={16} /> Synchronizing "Get in Touch with Smart Medical Care" title...
+              </div>
+            </div>
+          ) : (
+            /* DYNAMIC TITLE REVEALED AFTER 1.5s DELAY */
+            <div className="animate-title-reveal">
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', padding: '0.4rem 1.1rem', borderRadius: '30px', fontSize: '0.85rem', fontWeight: 700, color: '#5eead4', marginBottom: '1.25rem' }}>
+                <Sparkles size={16} /> We Are Here to Assist You
+              </div>
+              <h1 style={{ fontSize: 'calc(2.3rem + 1vw)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px', color: '#ffffff' }}>
+                Get in Touch with Smart Medical Care
+              </h1>
+              <p style={{ fontSize: '1.15rem', color: '#e0f2fe', marginTop: '0.75rem', lineHeight: 1.6, maxWidth: '700px', margin: '0.75rem auto 0 auto' }}>
+                Have questions about OCR scanner performance, technical integration, or pharmaceutical data indexing? Reach out to our technical support team.
+              </p>
+            </div>
+          )}
+
         </div>
       </section>
 
@@ -191,7 +248,7 @@ const Contact = () => {
                     cursor: loading ? 'wait' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    justify: 'center',
+                    justifyContent: 'center',
                     gap: '0.5rem',
                     boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
                   }}
