@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -21,18 +21,72 @@ import {
   HeartPulse,
   ChevronRight,
   ShieldAlert,
-  FileCheck
+  FileCheck,
+  Stethoscope,
+  Activity,
+  Filter,
+  Check
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import FounderLeadershipSection from '../components/common/FounderLeadershipSection';
 import ProjectUserGuideSection from '../components/common/ProjectUserGuideSection';
+import DynamicPageHeader from '../components/common/DynamicPageHeader';
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
 
+  // Dynamic States
+  const [heroTab, setHeroTab] = useState('ocr'); // 'ocr' | 'predoctor' | 'expiry' | 'cabinet'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+  
+  // Dynamic Counter State
+  const [scansCount, setScansCount] = useState(1200);
+  const [medicinesCount, setMedicinesCount] = useState(4800);
+  const [checkersCount, setCheckersCount] = useState(80);
+
+  // Animated counters on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setScansCount(1450);
+      setMedicinesCount(5200);
+      setCheckersCount(100);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Sample verified medicine dataset for live dynamic search & filter
+  const sampleMedicines = [
+    { name: "Paracetamol 650mg", category: "Analgesic", indication: "Fever reduction, pain relief", status: "Verified", badge: "Common" },
+    { name: "Amoxicillin 500mg", category: "Antibiotic", indication: "Bacterial infections & respiratory care", status: "Verified", badge: "Prescription" },
+    { name: "Pantoprazole 40mg", category: "Gastric", indication: "Acid reflux, GERD, heartburn relief", status: "Verified", badge: "Common" },
+    { name: "Cetirizine 10mg", category: "Anti-Allergy", indication: "Allergic rhinitis, hives & sneezing", status: "Verified", badge: "OTC" },
+    { name: "Metformin 500mg", category: "Antidiabetic", indication: "Type-2 diabetes blood sugar control", status: "Verified", badge: "Chronic" },
+    { name: "Azithromycin 500mg", category: "Antibiotic", indication: "Throat infection, bronchitis & pneumonia", status: "Verified", badge: "Prescription" },
+    { name: "Atorvastatin 10mg", category: "Cardiovascular", indication: "Cholesterol management & heart health", status: "Verified", badge: "Prescription" },
+    { name: "Omeprazole 20mg", category: "Gastric", indication: "Stomach ulcers & acidity neutralization", status: "Verified", badge: "Common" }
+  ];
+
+  const categories = ['All', 'Analgesic', 'Antibiotic', 'Gastric', 'Anti-Allergy', 'Antidiabetic', 'Cardiovascular'];
+
+  const filteredMedicines = sampleMedicines.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          item.indication.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
     <div className="page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
       
+      {/* 1. DYNAMIC TOP HEADER BANNER (1-2 Sec Active Sync) */}
+      <DynamicPageHeader
+        pageTitle="Smart Medical Care Home Engine"
+        pageSubtitle="Real-time Medicine Identification, Expiry Monitoring & Pre-Doctor Checkers"
+        syncText="✨ Live System Engine Synced with MongoDB & OCR Scanner"
+        badgeText="LIVE HOME ENGINE ACTIVE"
+      />
+
       {/* HERO SECTION */}
       <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0f766e 50%, #0369a1 100%)', color: '#ffffff', padding: '4.5rem 1.5rem 5.5rem 1.5rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem', alignItems: 'center' }}>
@@ -49,6 +103,23 @@ const Home = () => {
             <p style={{ fontSize: '1.15rem', lineHeight: 1.65, color: '#e2e8f0', marginBottom: '2.25rem', maxWidth: '580px' }}>
               Scan any medicine label or strip using OCR intelligence. Instantly extract generic names, dosage, expiry dates, common uses, side effects, and critical safety warnings.
             </p>
+
+            {/* Dynamic Counter Badges */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2rem' }}>
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
+                <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#5eead4', display: 'block' }}>{scansCount.toLocaleString()}+</span>
+                <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scans Processed</span>
+              </div>
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
+                <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', display: 'block' }}>{medicinesCount.toLocaleString()}+</span>
+                <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Indexed Medicines</span>
+              </div>
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '0.65rem 1.1rem', borderRadius: '14px' }}>
+                <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4ade80', display: 'block' }}>{checkersCount}</span>
+                <span style={{ fontSize: '0.75rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pre-Doctor Checks</span>
+              </div>
+            </div>
+
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
               <Link
                 to={isAuthenticated ? "/scan" : "/login"}
@@ -57,50 +128,134 @@ const Home = () => {
                 <ScanLine size={22} /> Scan Medicine Now <ArrowRight size={18} />
               </Link>
               <Link
-                to="/about"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', fontWeight: 600, padding: '1rem 1.75rem', borderRadius: '12px', textDecoration: 'none', border: '1px solid rgba(255, 255, 255, 0.25)', fontSize: '1rem' }}
+                to="/pre-doctor-checker"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.15)', color: '#ffffff', fontWeight: 700, padding: '1rem 1.75rem', borderRadius: '12px', textDecoration: 'none', border: '1px solid rgba(255, 255, 255, 0.3)', fontSize: '1rem' }}
               >
-                Learn How It Works
+                <Stethoscope size={20} color="#5eead4" /> 100 Pre-Doctor Checkers
               </Link>
             </div>
           </div>
 
-          {/* Interactive Preview Scanner Box */}
+          {/* Interactive Dynamic Preview Scanner Box with Tabs */}
           <div style={{ position: 'relative' }}>
+            {/* Dynamic Tab Switcher */}
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', background: 'rgba(0, 0, 0, 0.3)', padding: '0.35rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <button
+                onClick={() => setHeroTab('ocr')}
+                style={{ flex: 1, padding: '0.5rem', borderRadius: '10px', border: 'none', background: heroTab === 'ocr' ? '#0d9488' : 'transparent', color: '#ffffff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              >
+                OCR Scanner
+              </button>
+              <button
+                onClick={() => setHeroTab('predoctor')}
+                style={{ flex: 1, padding: '0.5rem', borderRadius: '10px', border: 'none', background: heroTab === 'predoctor' ? '#0d9488' : 'transparent', color: '#ffffff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              >
+                Pre-Doctor Check
+              </button>
+              <button
+                onClick={() => setHeroTab('expiry')}
+                style={{ flex: 1, padding: '0.5rem', borderRadius: '10px', border: 'none', background: heroTab === 'expiry' ? '#0d9488' : 'transparent', color: '#ffffff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              >
+                Expiry System
+              </button>
+            </div>
+
             <div style={{ background: 'rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '24px', padding: '2rem', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' }}>
               
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Pill size={26} color="#ffffff" />
+              {heroTab === 'ocr' && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Pill size={26} color="#ffffff" />
+                      </div>
+                      <div>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: '#ffffff' }}>Amoxicillin 500mg</h3>
+                        <span style={{ fontSize: '0.8rem', color: '#5eead4', fontWeight: 600 }}>Verified Antibiotic • Batch: AMX-8921</span>
+                      </div>
+                    </div>
+                    <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.75rem', fontWeight: 800, padding: '0.3rem 0.75rem', borderRadius: '20px' }}>
+                      OCR Verified
+                    </span>
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: '#ffffff' }}>Amoxicillin 500mg</h3>
-                    <span style={{ fontSize: '0.8rem', color: '#5eead4', fontWeight: 600 }}>Verified Antibiotic • Batch: AMX-8921</span>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.25)', padding: '0.9rem', borderRadius: '12px' }}>
+                      <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block' }}>Manufacturing Date</span>
+                      <strong style={{ fontSize: '1rem', color: '#f8fafc' }}>10/2024</strong>
+                    </div>
+                    <div style={{ background: 'rgba(0,0,0,0.25)', padding: '0.9rem', borderRadius: '12px' }}>
+                      <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block' }}>Expiry Status</span>
+                      <strong style={{ fontSize: '1rem', color: '#4ade80' }}>10/2026 (Safe)</strong>
+                    </div>
                   </div>
-                </div>
-                <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.75rem', fontWeight: 800, padding: '0.3rem 0.75rem', borderRadius: '20px' }}>
-                  OCR Verified
-                </span>
-              </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '0.9rem', borderRadius: '12px' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block' }}>Manufacturing Date</span>
-                  <strong style={{ fontSize: '1rem', color: '#f8fafc' }}>10/2024</strong>
-                </div>
-                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '0.9rem', borderRadius: '12px' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block' }}>Expiry Status</span>
-                  <strong style={{ fontSize: '1rem', color: '#4ade80' }}>10/2026 (Safe)</strong>
-                </div>
-              </div>
+                  <div style={{ background: 'rgba(13, 148, 136, 0.2)', border: '1px solid rgba(20, 184, 166, 0.3)', padding: '1rem', borderRadius: '12px', fontSize: '0.88rem', color: '#ccfbf1' }}>
+                    <strong style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#2dd4bf', marginBottom: '0.25rem' }}>
+                      <ShieldCheck size={18} /> Primary Indication
+                    </strong>
+                    Prescribed for bacterial respiratory infections, sinusitis, bronchitis, and skin soft-tissue infections.
+                  </div>
+                </>
+              )}
 
-              <div style={{ background: 'rgba(13, 148, 136, 0.2)', border: '1px solid rgba(20, 184, 166, 0.3)', padding: '1rem', borderRadius: '12px', fontSize: '0.88rem', color: '#ccfbf1' }}>
-                <strong style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#2dd4bf', marginBottom: '0.25rem' }}>
-                  <ShieldCheck size={18} /> Primary Indication
-                </strong>
-                Prescribed for bacterial respiratory infections, sinusitis, bronchitis, and skin soft-tissue infections.
-              </div>
+              {heroTab === 'predoctor' && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Stethoscope size={26} color="#ffffff" />
+                      </div>
+                      <div>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: '#ffffff' }}>Cardiology & Chest Check</h3>
+                        <span style={{ fontSize: '0.8rem', color: '#38bdf8', fontWeight: 600 }}>Domain #1 of 10 Clinical Domains</span>
+                      </div>
+                    </div>
+                    <span style={{ background: 'rgba(2, 132, 199, 0.2)', color: '#38bdf8', fontSize: '0.75rem', fontWeight: 800, padding: '0.3rem 0.75rem', borderRadius: '20px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                      100 Features Active
+                    </span>
+                  </div>
+
+                  <div style={{ background: 'rgba(0,0,0,0.25)', padding: '1rem', borderRadius: '12px', marginBottom: '1rem' }}>
+                    <span style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'block', marginBottom: '0.25rem' }}>Sample Clinical Question Checklist:</span>
+                    <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.85rem', color: '#e2e8f0', lineHeight: 1.6 }}>
+                      <li>Does chest pressure radiate to your arm or jaw?</li>
+                      <li>Are you experiencing shortness of breath at rest?</li>
+                      <li>Current medication history logged in database.</li>
+                    </ul>
+                  </div>
+
+                  <Link to="/pre-doctor-checker" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#5eead4', fontSize: '0.88rem', fontWeight: 700, textDecoration: 'none' }}>
+                    Explore All 100 Clinical Checkers <ArrowRight size={16} />
+                  </Link>
+                </>
+              )}
+
+              {heroTab === 'expiry' && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Bell size={26} color="#ffffff" />
+                      </div>
+                      <div>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: '#ffffff' }}>Automated Expiry Safeguard</h3>
+                        <span style={{ fontSize: '0.8rem', color: '#fde047', fontWeight: 600 }}>Active Cabinet Monitoring</span>
+                      </div>
+                    </div>
+                    <span style={{ background: '#fef3c7', color: '#b45309', fontSize: '0.75rem', fontWeight: 800, padding: '0.3rem 0.75rem', borderRadius: '20px' }}>
+                      Alert Active
+                    </span>
+                  </div>
+
+                  <div style={{ background: 'rgba(217, 119, 6, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', padding: '1rem', borderRadius: '12px', fontSize: '0.88rem', color: '#fef08a' }}>
+                    <strong style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#fbbf24', marginBottom: '0.25rem' }}>
+                      <Clock size={18} /> Expiring in 14 Days
+                    </strong>
+                    Cough Syrup B-201 expires on Sep 2, 2026. Automated reminder set for dosage & safe disposal guidance.
+                  </div>
+                </>
+              )}
 
             </div>
           </div>
@@ -117,6 +272,112 @@ const Home = () => {
             </strong>
             Smart Medical Care is designed strictly for educational reference and household medicine organization. It does not provide medical diagnosis, prescription advice, or direct treatment plans. Always verify scanned results with certified healthcare professionals or official packaging labels before consuming any drug.
           </div>
+        </div>
+      </section>
+
+      {/* DYNAMIC LIVE MEDICINE SEARCH & FILTER SHOWCASE */}
+      <section style={{ padding: '4rem 1.5rem', background: 'var(--bg-surface-elevated)', borderBottom: '1px solid var(--border-light)' }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div>
+              <span style={{ color: '#0d9488', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.82rem' }}>
+                Instant Dynamic Explorer
+              </span>
+              <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-main)', margin: '0.2rem 0 0 0' }}>
+                Search Verified Medicine Formulations
+              </h2>
+            </div>
+
+            {/* Dynamic Search Box */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: '380px' }}>
+              <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="text"
+                placeholder="Search paracetamol, antibiotic, fever..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem 0.75rem 2.6rem',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-light)',
+                  background: 'var(--bg-input)',
+                  color: 'var(--text-main)',
+                  fontSize: '0.95rem',
+                  outline: 'none',
+                  boxShadow: 'var(--shadow-xs)'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                style={{
+                  padding: '0.45rem 1rem',
+                  borderRadius: '20px',
+                  border: activeCategory === cat ? '1px solid #0d9488' : '1px solid var(--border-light)',
+                  background: activeCategory === cat ? '#0d9488' : 'var(--bg-surface)',
+                  color: activeCategory === cat ? '#ffffff' : 'var(--text-muted)',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Dynamic Grid Results */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '1.25rem' }}>
+            {filteredMedicines.map((med, index) => (
+              <div
+                key={index}
+                style={{
+                  background: 'var(--bg-surface)',
+                  borderRadius: '16px',
+                  padding: '1.35rem',
+                  border: '1px solid var(--border-light)',
+                  boxShadow: 'var(--shadow-sm)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justify: 'space-between'
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#0d9488', background: 'var(--success-bg)', padding: '0.2rem 0.55rem', borderRadius: '6px' }}>
+                      {med.category}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', background: 'var(--bg-main)', padding: '0.2rem 0.5rem', borderRadius: '6px' }}>
+                      {med.badge}
+                    </span>
+                  </div>
+                  <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)', margin: '0 0 0.4rem 0' }}>
+                    {med.name}
+                  </h4>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+                    {med.indication}
+                  </p>
+                </div>
+                <div style={{ marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px dashed var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.78rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <CheckCircle2 size={14} /> {med.status}
+                  </span>
+                  <Link to={isAuthenticated ? "/scan" : "/login"} style={{ fontSize: '0.8rem', color: '#0284c7', fontWeight: 700, textDecoration: 'none' }}>
+                    Scan & Verify →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -241,47 +502,6 @@ const Home = () => {
                 View detailed information, save to "My Medicines", and receive automated alerts before the item expires.
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SAMPLE RECOGNIZED MEDICINES SHOWCASE */}
-      <section style={{ padding: '5rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <span style={{ color: '#0d9488', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>
-            Verified Formulations
-          </span>
-          <h2 style={{ fontSize: '2.3rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '0.3rem' }}>
-            Indexed Medicine Examples
-          </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '600px', margin: '0.5rem auto 0 auto' }}>
-            Our repository indexes thousands of essential medications across multiple dosage forms.
-          </p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-          <div style={{ background: 'var(--bg-surface)', padding: '1.75rem', borderRadius: '18px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0284c7', background: 'var(--info-bg)', padding: '0.25rem 0.6rem', borderRadius: '6px' }}>Antibiotic</span>
-            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', margin: '0.75rem 0 0.25rem 0' }}>Paracetamol 650mg</h4>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', margin: 0 }}>Analgesic & Antipyretic used for fever reduction and mild body pains.</p>
-          </div>
-
-          <div style={{ background: 'var(--bg-surface)', padding: '1.75rem', borderRadius: '18px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0d9488', background: 'var(--success-bg)', padding: '0.25rem 0.6rem', borderRadius: '6px' }}>Gastric Care</span>
-            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', margin: '0.75rem 0 0.25rem 0' }}>Pantoprazole 40mg</h4>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', margin: 0 }}>Proton pump inhibitor reducing stomach acid secretion for acid reflux relief.</p>
-          </div>
-
-          <div style={{ background: 'var(--bg-surface)', padding: '1.75rem', borderRadius: '18px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#d97706', background: 'var(--warning-bg)', padding: '0.25rem 0.6rem', borderRadius: '6px' }}>Anti-Allergy</span>
-            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', margin: '0.75rem 0 0.25rem 0' }}>Cetirizine 10mg</h4>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', margin: 0 }}>Antihistamine providing relief from allergic rhinitis, sneezing, and hives.</p>
-          </div>
-
-          <div style={{ background: 'var(--bg-surface)', padding: '1.75rem', borderRadius: '18px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9333ea', background: 'rgba(147, 51, 234, 0.15)', padding: '0.25rem 0.6rem', borderRadius: '6px' }}>Antidiabetic</span>
-            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', margin: '0.75rem 0 0.25rem 0' }}>Metformin 500mg</h4>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', margin: 0 }}>Biguanide agent improving insulin sensitivity in Type-2 Diabetes control.</p>
           </div>
         </div>
       </section>
