@@ -26,7 +26,9 @@ import {
   Activity,
   Filter,
   Check,
-  RefreshCw
+  RefreshCw,
+  Award,
+  FileText
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import FounderLeadershipSection from '../components/common/FounderLeadershipSection';
