@@ -770,14 +770,20 @@ const FaceHealthScanner = ({ onScanComplete, onClose }) => {
     };
 
     setScanResult(finalResult);
+
+    // Auto save scan & increment live global scan counter
+    try {
+      const saved = faceScanService.saveFaceScan(finalResult);
+      if (onScanComplete) onScanComplete(saved || finalResult);
+    } catch (err) {
+      console.error('Auto-save scan error:', err);
+    }
   };
 
   // Save Result to Patient History
   const handleSaveToHistory = () => {
     if (!scanResult) return;
-    faceScanService.saveFaceScan(scanResult);
-    if (showToast) showToast('AI Face Health Scan saved to your Patient History record!', 'success');
-    if (onScanComplete) onScanComplete(scanResult);
+    if (showToast) showToast('AI Face Health Scan & Official Certificate saved to your Patient History record!', 'success');
   };
 
   // Print Report

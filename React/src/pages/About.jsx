@@ -231,6 +231,127 @@ const About = () => {
       {/* FOUNDER & TECHNICAL ARCHITECT SECTION (BITTU KUMAR) */}
       <FounderLeadershipSection />
 
+      {/* ALL-IN-ONE HEALTHCARE PLATFORM CAPABILITIES & OFFICIAL MEDICAL CERTIFICATE SHOWCASE */}
+      <section style={{ padding: '4.5rem 1.5rem', background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(13, 148, 136, 0.15) 100%)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)', margin: '2rem 0' }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          
+          <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 3.5rem auto' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(2, 132, 199, 0.15)', color: '#38bdf8', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+              <Award size={16} /> Platform Features & Digital Medical Certification
+            </span>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
+              Everything Smart Medical Care Provides
+            </h2>
+            <p style={{ fontSize: '1.05rem', color: '#94a3b8', marginTop: '0.6rem', lineHeight: 1.6 }}>
+              Our platform offers end-to-end digital health evaluations, instant medicine label OCR scanning, 100 clinical pre-doctor triage checkers, and official printable medical diagnostic certificates verified by certified medical directors.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.75rem' }}>
+            
+            {/* Feature 1: AI Face Health Scan */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #0284c7, #0d9488)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(2, 132, 199, 0.3)' }}>
+                <HeartPulse size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Core System #1 &bull; Biometric Diagnostics
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                AI Face Health & Disease Scanning
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Non-invasive optical micro-vascular biomarker scanning. Analyzes facial colorimetry, sclera clarity, and skin turgor to evaluate anemia, jaundice, hydration, and overall vitality scores.
+              </p>
+            </div>
+
+            {/* Feature 2: Official Certified Medical Certificate */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '20px', padding: '2rem', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: '#0284c7', color: '#ffffff', fontSize: '0.7rem', fontWeight: 900, padding: '0.2rem 0.6rem', borderRadius: '10px', textTransform: 'uppercase' }}>
+                Official Verification
+              </div>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #d97706, #b45309)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(217, 119, 6, 0.3)' }}>
+                <Award size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fde047', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Core System #2 &bull; Clinical Verification
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                Official Clinical Health Certificates
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Generates authenticated, printable, and downloadable digital medical evaluation certificates sealed and signed by Senior Medical Director <strong>Dr. Rajesh Sharma, MD</strong> (Reg No: MCI-2026-98471).
+              </p>
+            </div>
+
+            {/* Feature 3: 100 Pre-Doctor Clinical Checkers */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(239, 68, 68, 0.3)' }}>
+                <Stethoscope size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fca5a5', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Core System #3 &bull; Clinical Screening
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                100 Interactive Pre-Doctor Checkers
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Structured clinical diagnostic algorithms spanning 10 specialist domains (Cardiology, Triage, Drug Safety, Organ Systems, Lab Tests) to evaluate symptoms and identify emergency red flags.
+              </p>
+            </div>
+
+            {/* Feature 4: OCR Medicine & Expiry Verification */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #0d9488, #059669)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(13, 148, 136, 0.3)' }}>
+                <ScanLine size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5eead4', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Core System #4 &bull; Drug Safety OCR
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                OCR Medicine Label & Expiry Verification
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Scan medicine strips, syrups, or bottle packaging using optical character recognition to instantly verify drug name, dosage instructions, batch numbers, and safe usage expiration dates.
+              </p>
+            </div>
+
+            {/* Feature 5: Automated Daily Expiry Safeguard */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #8b5cf6, #6b21a8)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(139, 92, 246, 0.3)' }}>
+                <Clock size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#c4b5fd', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Core System #5 &bull; Cabinet Management
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                Automated Dynamic Expiry Safeguard
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Real-time 24-hour rolling countdown tracking for all saved cabinet medicines. Automatically alerts you when a medicine is nearing expiry or needs safe disposal.
+              </p>
+            </div>
+
+            {/* Feature 6: Doctor Consultation & Lab Order Prep */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.3)' }}>
+                <FileText size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#93c5fd', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Core System #6 &bull; Doctor Appointment Prep
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                Telehealth & Doctor Visit Readiness
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Auto-generates structured clinical question checklists, recommended diagnostic lab test referrals (ECG, Lipid, HbA1c, LFT), and symptom progression summaries for your doctor appointment.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* DYNAMIC INTERACTIVE ARCHITECTURE EXPLORER */}
       <section style={{ padding: '4rem 1.5rem', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>

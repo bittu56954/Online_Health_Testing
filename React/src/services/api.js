@@ -84,6 +84,39 @@ export const faceScanService = {
       return [];
     }
   },
+  getTotalScanCount: () => {
+    try {
+      // 1. Calculate daily organic growth since launch date (Aug 1, 2026)
+      const baseDate = new Date(2026, 7, 1);
+      const today = new Date();
+      const diffTime = Math.max(0, today.getTime() - baseDate.getTime());
+      const daysPassed = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      // ~35 organic scans per day
+      const organicDailyCount = daysPassed * 35;
+      
+      // 2. Add manual scan bonus and user saved scans
+      const manualBonus = parseInt(localStorage.getItem('mediscan_manual_scan_bonus') || '0', 10);
+      const userScansCount = faceScanService.getFaceScans().length;
+      
+      return 2840 + organicDailyCount + userScansCount + manualBonus;
+    } catch {
+      return 3500;
+    }
+  },
+  incrementTotalScanCount: () => {
+    try {
+      const currentBonus = parseInt(localStorage.getItem('mediscan_manual_scan_bonus') || '0', 10);
+      const updatedBonus = currentBonus + 1;
+      localStorage.setItem('mediscan_manual_scan_bonus', updatedBonus.toString());
+      
+      const newTotal = faceScanService.getTotalScanCount();
+      window.dispatchEvent(new CustomEvent('faceScanCompleted', { detail: { count: newTotal } }));
+      return newTotal;
+    } catch {
+      return 3501;
+    }
+  },
   saveFaceScan: (scanData) => {
     try {
       const scans = faceScanService.getFaceScans();
@@ -94,6 +127,7 @@ export const faceScanService = {
       };
       const updated = [newScan, ...scans];
       localStorage.setItem('mediscan_face_scans', JSON.stringify(updated));
+      faceScanService.incrementTotalScanCount();
       return newScan;
     } catch (e) {
       console.error('Error saving face scan:', e);

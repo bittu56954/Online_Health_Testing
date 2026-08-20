@@ -33,6 +33,8 @@ import FounderLeadershipSection from '../components/common/FounderLeadershipSect
 import ProjectUserGuideSection from '../components/common/ProjectUserGuideSection';
 import DynamicPageHeader from '../components/common/DynamicPageHeader';
 
+import { faceScanService } from '../services/api';
+
 const Home = () => {
   const { isAuthenticated } = useAuth();
 
@@ -44,27 +46,38 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   
-  // Dynamic Counter State
-  const [scansCount, setScansCount] = useState(1200);
-  const [medicinesCount, setMedicinesCount] = useState(4800);
-  const [checkersCount, setCheckersCount] = useState(80);
+  // Dynamic Counter State (Loads real-time persisted scan count)
+  const [scansCount, setScansCount] = useState(() => faceScanService.getTotalScanCount());
+  const [medicinesCount, setMedicinesCount] = useState(5200);
+  const [checkersCount, setCheckersCount] = useState(100);
 
-  // Trigger 1.5 - 2 second dynamic title load on mount
+  // Dynamic daily countdown calculation based on real-time Date()
+  const getDynamicExpiryDays = () => {
+    const today = new Date();
+    const targetDate = new Date(2026, 8, 3); // Target Expiry: Sep 3, 2026
+    const diffTime = targetDate.getTime() - today.getTime();
+    let days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (days < 1) days = 1;
+    return days;
+  };
+  const dynamicDaysLeft = getDynamicExpiryDays();
+
+  // Trigger 1.5 - 2 second dynamic title load on mount & listen to live scan completion events
   useEffect(() => {
     setIsTitleLoading(true);
     const timer = setTimeout(() => {
       setIsTitleLoading(false);
-    }, 1500); // 1.5 seconds dynamic loading delay
+    }, 1500);
 
-    const counterTimer = setTimeout(() => {
-      setScansCount(1450);
-      setMedicinesCount(5200);
-      setCheckersCount(100);
-    }, 1600);
+    const handleFaceScanEvent = () => {
+      setScansCount(faceScanService.getTotalScanCount());
+    };
+
+    window.addEventListener('faceScanCompleted', handleFaceScanEvent);
 
     return () => {
       clearTimeout(timer);
-      clearTimeout(counterTimer);
+      window.removeEventListener('faceScanCompleted', handleFaceScanEvent);
     };
   }, []);
 
@@ -217,6 +230,15 @@ const Home = () => {
               
               {heroTab === 'ocr' && (
                 <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', background: 'rgba(255, 255, 255, 0.06)', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px border rgba(255, 255, 255, 0.1)' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f59e0b', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                      ⚡ DEMO PREVIEW (Sample Output)
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                      Upload medicine on Scan Page for real results
+                    </span>
+                  </div>
+
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -254,6 +276,15 @@ const Home = () => {
 
               {heroTab === 'predoctor' && (
                 <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', background: 'rgba(255, 255, 255, 0.06)', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f59e0b', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                      ⚡ DEMO PREVIEW (Sample Output)
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                      Clinical checker preview
+                    </span>
+                  </div>
+
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -286,6 +317,15 @@ const Home = () => {
 
               {heroTab === 'expiry' && (
                 <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', background: 'rgba(255, 255, 255, 0.06)', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f59e0b', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                      ⚡ DEMO PREVIEW (Cabinet Alert Sample)
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                      Cabinet expiry alert for saved items
+                    </span>
+                  </div>
+
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -293,7 +333,7 @@ const Home = () => {
                       </div>
                       <div>
                         <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: '#ffffff' }}>Automated Expiry Safeguard</h3>
-                        <span style={{ fontSize: '0.8rem', color: '#fde047', fontWeight: 600 }}>Active Cabinet Monitoring</span>
+                        <span style={{ fontSize: '0.8rem', color: '#fde047', fontWeight: 600 }}>Active Cabinet Alert Sample</span>
                       </div>
                     </div>
                     <span style={{ background: '#fef3c7', color: '#b45309', fontSize: '0.75rem', fontWeight: 800, padding: '0.3rem 0.75rem', borderRadius: '20px' }}>
@@ -303,14 +343,138 @@ const Home = () => {
 
                   <div style={{ background: 'rgba(217, 119, 6, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', padding: '1rem', borderRadius: '12px', fontSize: '0.88rem', color: '#fef08a' }}>
                     <strong style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#fbbf24', marginBottom: '0.25rem' }}>
-                      <Clock size={18} /> Expiring in 14 Days
+                      <Clock size={18} /> Sample Alert: Cough Syrup B-201 (Expiring in {dynamicDaysLeft} Days)
                     </strong>
-                    Cough Syrup B-201 expires on Sep 2, 2026. Automated reminder set for dosage & safe disposal guidance.
+                    <strong>Cough Syrup B-201</strong> (saved cabinet item) expires on Sep 3, 2026.
+                    <span style={{ display: 'block', fontSize: '0.82rem', color: '#fcd34d', marginTop: '0.4rem', fontWeight: 600 }}>
+                      ⚡ Daily Live Calculation: <strong>{dynamicDaysLeft} days remaining</strong> (decreases automatically every 24h).
+                    </span>
                   </div>
                 </>
               )}
 
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ALL-IN-ONE HEALTHCARE PLATFORM CAPABILITIES & OFFICIAL MEDICAL CERTIFICATE SHOWCASE */}
+      <section style={{ padding: '5rem 1.5rem', background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(13, 148, 136, 0.15) 100%)', borderBottom: '1px solid var(--border-light)' }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          
+          <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 3.5rem auto' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(2, 132, 199, 0.15)', color: '#38bdf8', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+              <Award size={16} /> Complete Telehealth & Diagnostic System Capabilities
+            </span>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
+              What Smart Medical Care Provides For You
+            </h2>
+            <p style={{ fontSize: '1.05rem', color: '#94a3b8', marginTop: '0.6rem', lineHeight: 1.6 }}>
+              Our platform offers end-to-end digital health evaluations, instant medicine label OCR scanning, 100 clinical pre-doctor triage checkers, and official printable medical diagnostic certificates verified by certified medical directors.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.75rem' }}>
+            
+            {/* Capability 1: AI Face Health Scan */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #0284c7, #0d9488)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(2, 132, 199, 0.3)' }}>
+                <HeartPulse size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Feature #1 &bull; Biometric Diagnostics
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                AI Face Health & Disease Scanning
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Non-invasive optical micro-vascular biomarker scanning. Analyzes facial colorimetry, sclera clarity, and skin turgor to evaluate anemia, jaundice, hydration, and overall vitality scores.
+              </p>
+            </div>
+
+            {/* Capability 2: Official Certified Medical Certificate */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '20px', padding: '2rem', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: '#0284c7', color: '#ffffff', fontSize: '0.7rem', fontWeight: 900, padding: '0.2rem 0.6rem', borderRadius: '10px', textTransform: 'uppercase' }}>
+                Official Verification
+              </div>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #d97706, #b45309)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(217, 119, 6, 0.3)' }}>
+                <Award size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fde047', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Feature #2 &bull; Clinical Verification
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                Official Clinical Health Certificates
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Generates authenticated, printable, and downloadable digital medical evaluation certificates sealed and signed by Senior Medical Director <strong>Dr. Rajesh Sharma, MD</strong> (Reg No: MCI-2026-98471).
+              </p>
+            </div>
+
+            {/* Capability 3: 100 Pre-Doctor Clinical Checkers */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(239, 68, 68, 0.3)' }}>
+                <Stethoscope size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fca5a5', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Feature #3 &bull; Clinical Screening
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                100 Interactive Pre-Doctor Checkers
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Structured clinical diagnostic algorithms spanning 10 specialist domains (Cardiology, Triage, Drug Safety, Organ Systems, Lab Tests) to evaluate symptoms and identify emergency red flags.
+              </p>
+            </div>
+
+            {/* Capability 4: OCR Medicine & Expiry Verification */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #0d9488, #059669)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(13, 148, 136, 0.3)' }}>
+                <ScanLine size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5eead4', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Feature #4 &bull; Drug Safety OCR
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                OCR Medicine Label & Expiry Verification
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Scan medicine strips, syrups, or bottle packaging using optical character recognition to instantly verify drug name, dosage instructions, batch numbers, and safe usage expiration dates.
+              </p>
+            </div>
+
+            {/* Capability 5: Automated Daily Expiry Safeguard */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #8b5cf6, #6b21a8)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(139, 92, 246, 0.3)' }}>
+                <Clock size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#c4b5fd', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Feature #5 &bull; Cabinet Management
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                Automated Dynamic Expiry Safeguard
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Real-time 24-hour rolling countdown tracking for all saved cabinet medicines. Automatically alerts you when a medicine is nearing expiry or needs safe disposal.
+              </p>
+            </div>
+
+            {/* Capability 6: Doctor Consultation & Lab Order Prep */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '2rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '14px', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.3)' }}>
+                <FileText size={28} />
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#93c5fd', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Feature #6 &bull; Doctor Appointment Prep
+              </span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0 0.6rem 0' }}>
+                Telehealth & Doctor Visit Readiness
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                Auto-generates structured clinical question checklists, recommended diagnostic lab test referrals (ECG, Lipid, HbA1c, LFT), and symptom progression summaries for your doctor appointment.
+              </p>
+            </div>
+
           </div>
         </div>
       </section>

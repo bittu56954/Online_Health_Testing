@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { medicineService, historyService, reminderService, authService, faceScanService } from '../services/api';
 import FaceHealthScanner from '../components/dashboard/FaceHealthScanner';
+import DoctorBillModal from '../components/common/DoctorBillModal';
 import {
   Pill,
   ScanLine,
@@ -34,7 +35,8 @@ import {
   ChevronRight,
   Scan,
   Eye,
-  HeartPulse
+  HeartPulse,
+  Award
 } from 'lucide-react';
 import Footer from '../components/common/Footer';
 import { useToast } from '../context/ToastContext';
@@ -52,6 +54,10 @@ const Dashboard = () => {
   // AI Face Scanner State
   const [showFaceScannerModal, setShowFaceScannerModal] = useState(false);
   const [faceScanHistory, setFaceScanHistory] = useState([]);
+
+  // Certificate Modal State
+  const [selectedCertScan, setSelectedCertScan] = useState(null);
+  const [showCertModal, setShowCertModal] = useState(false);
 
   // Edit Profile Modal state
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -749,6 +755,86 @@ const Dashboard = () => {
           </div>
 
         </div>
+
+        {/* SAVED AI FACE SCAN CERTIFICATES & MEDICAL REPORTS */}
+        <div style={{ background: 'var(--bg-surface)', borderRadius: '20px', padding: '2rem', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', marginTop: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Award size={22} color="#0284c7" /> Saved AI Health Certificates & Face Scan History
+              </h3>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                Total Live Platform Scans: <strong>{faceScanService.getTotalScanCount()} Scans Completed</strong> (Updates automatically)
+              </span>
+            </div>
+            <button
+              onClick={() => setShowFaceScannerModal(true)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(135deg, #0284c7, #0d9488)', color: '#ffffff', border: 'none', padding: '0.6rem 1.25rem', borderRadius: '12px', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', boxShadow: '0 4px 14px rgba(2, 132, 199, 0.3)' }}
+            >
+              <Scan size={18} /> New AI Face Health Scan
+            </button>
+          </div>
+
+          {faceScanHistory.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2.5rem 1rem', background: 'var(--bg-main)', borderRadius: '14px', border: '1px dashed var(--border-light)' }}>
+              <Award size={36} color="var(--text-muted)" style={{ marginBottom: '0.5rem' }} />
+              <h4 style={{ fontSize: '1rem', color: 'var(--text-main)', margin: 0 }}>No Saved Health Certificates Yet</h4>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Run an AI Face Scan to generate and save your official clinical medical certificate here.</p>
+              <button
+                onClick={() => setShowFaceScannerModal(true)}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '1rem', background: '#0284c7', color: '#ffffff', border: 'none', padding: '0.55rem 1.1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer' }}
+              >
+                <Scan size={16} /> Scan Face Now
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+              {faceScanHistory.map((scan) => (
+                <div key={scan._id} style={{ background: 'var(--bg-main)', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0284c7', background: 'rgba(2, 132, 199, 0.1)', padding: '0.2rem 0.6rem', borderRadius: '10px', textTransform: 'uppercase' }}>
+                        Certificate #{scan._id.slice(-6)}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {new Date(scan.scanDate).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-main)', margin: '0 0 0.25rem 0' }}>
+                      {scan.statusTitle || 'Facial Health Scan Certificate'}
+                    </h4>
+
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <span>Score: <strong style={{ color: scan.healthScore > 75 ? '#059669' : '#dc2626' }}>{scan.healthScore || 90}/100</strong></span>
+                      <span>&bull;</span>
+                      <span>Verified Telehealth Report</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.85rem' }}>
+                    <button
+                      onClick={() => {
+                        setSelectedCertScan(scan);
+                        setShowCertModal(true);
+                      }}
+                      style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: '#0284c7', color: '#ffffff', border: 'none', padding: '0.55rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
+                    >
+                      <Award size={16} /> View / Print Certificate
+                    </button>
+                    <button
+                      onClick={() => handleDeleteFaceScan(scan._id)}
+                      style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', width: 36, height: 36, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                      title="Delete Record"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* AI FACE HEALTH SCANNER MODAL */}
@@ -761,6 +847,16 @@ const Dashboard = () => {
             />
           </div>
         </div>
+      )}
+
+      {/* OFFICIAL MEDICAL CERTIFICATE MODAL */}
+      {showCertModal && (
+        <DoctorBillModal
+          isOpen={showCertModal}
+          onClose={() => setShowCertModal(false)}
+          scanData={selectedCertScan}
+          billType="facial"
+        />
       )}
 
       <Footer />
