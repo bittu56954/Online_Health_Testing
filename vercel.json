@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd React && npm install && npx vite build",
+  "version": 2,
+  "buildCommand": "cd React && npm install && npm run build",
   "outputDirectory": "React/dist",
-  "framework": "vite",
   "rewrites": [
     {
       "source": "/(.*)",
