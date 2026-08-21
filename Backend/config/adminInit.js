@@ -11,7 +11,7 @@ export const ensureAdminAccount = async () => {
       {
         name: 'System Admin',
         email: 'admin@gmail.com',
-        password: 'admin123',
+        password: 'Admin#SmartCare2026',
         role: 'admin',
         phone: '+91 9876543210',
         isVerified: true,
@@ -20,7 +20,7 @@ export const ensureAdminAccount = async () => {
       {
         name: 'Mediscan Admin',
         email: 'admin@mediscan.com',
-        password: 'admin123',
+        password: 'Admin#SmartCare2026',
         role: 'admin',
         phone: '+1 800-555-0199',
         isVerified: true,

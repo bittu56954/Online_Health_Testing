@@ -18,7 +18,7 @@ const getLocalUsers = () => {
     _id: 'usr_admin_00',
     name: 'System Admin',
     email: 'admin@gmail.com',
-    password: 'admin123',
+    password: 'Admin#SmartCare2026',
     role: 'admin',
     isVerified: true,
     phone: '+91 9876543210'
@@ -28,7 +28,7 @@ const getLocalUsers = () => {
   if (adminIndex === -1) {
     users.unshift(defaultAdmin);
   } else {
-    users[adminIndex].password = 'admin123';
+    users[adminIndex].password = 'Admin#SmartCare2026';
     users[adminIndex].role = 'admin';
     users[adminIndex].isVerified = true;
   }

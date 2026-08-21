@@ -63,7 +63,7 @@ Run database seeding to generate pre-seeded accounts and sample data:
 npm run seed
 ```
 
-- **Admin Account**: `admin@gmail.com` | Password: `admin123`
+- **Admin Account**: `admin@gmail.com` | Password: `Admin#SmartCare2026`
 - **User Account**: `user@mediscan.com`  | Password: `User@123`
 
 ---
