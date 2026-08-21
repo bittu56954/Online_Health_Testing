@@ -35,8 +35,8 @@ const connectDB = async () => {
   const primaryUri = process.env.MONGO_URI || 'mongodb+srv://krbittu803110_db_user:dPU9R7yWn6z813GU@cluster0.j2vupm7.mongodb.net/india';
 
   const connectionOpts = {
-    serverSelectionTimeoutMS: 4000,
-    connectTimeoutMS: 4000,
+    serverSelectionTimeoutMS: 2500,
+    connectTimeoutMS: 2500,
     family: 4
   };
 
@@ -56,25 +56,27 @@ const connectDB = async () => {
     return conn;
   } catch (primaryErr) {
     cachedPromise = null;
-    console.warn(`[MEDISCAN DB WARN] Primary DB connection unavailable (${primaryErr.message}). Activating auto-fallback database...`);
+    console.warn(`[MEDISCAN DB WARN] Primary DB connection failed: ${primaryErr.message}`);
 
-    try {
-      if (mongoose.connection.readyState !== 0) {
-        await mongoose.disconnect();
+    if (!process.env.VERCEL) {
+      try {
+        if (mongoose.connection.readyState !== 0) {
+          await mongoose.disconnect();
+        }
+
+        const { MongoMemoryServer } = await import('mongodb-memory-server');
+        const memoryServerInstance = await MongoMemoryServer.create();
+        const mongoUri = memoryServerInstance.getUri();
+        const conn = await mongoose.connect(mongoUri);
+        cachedConn = conn;
+        console.log(`[MEDISCAN DB] Connected to In-Memory Database Fallback: ${conn.connection.host}`);
+        await ensureAdminAccount();
+        return conn;
+      } catch (fallbackErr) {
+        console.error(`[MEDISCAN DB FALLBACK ERR] ${fallbackErr.message}`);
       }
-
-      const { MongoMemoryServer } = await import('mongodb-memory-server');
-      const memoryServerInstance = await MongoMemoryServer.create();
-      const mongoUri = memoryServerInstance.getUri();
-      const conn = await mongoose.connect(mongoUri);
-      cachedConn = conn;
-      console.log(`[MEDISCAN DB] Successfully Connected to Auto-Fallback In-Memory Database: ${conn.connection.host}`);
-      await ensureAdminAccount();
-      return conn;
-    } catch (fallbackErr) {
-      console.error(`[MEDISCAN DB CRITICAL ERR] Fallback DB failed: ${fallbackErr.message}`);
-      throw primaryErr;
     }
+    throw primaryErr;
   }
 };
 
