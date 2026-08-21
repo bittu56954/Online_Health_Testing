@@ -28,9 +28,6 @@ try {
   console.warn('[MEDISCAN UPLOADS WARNING] Could not create uploads folder:', e.message);
 }
 
-// Connect to Database
-connectDB();
-
 const app = express();
 
 // Disable ETags for API endpoints to return 200 OK with fresh data
