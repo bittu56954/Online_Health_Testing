@@ -68,6 +68,11 @@ const connectDB = async () => {
   } catch (primaryErr) {
     cachedPromise = null;
     console.warn(`[MEDISCAN DB WARN] Primary DB connection failed: ${primaryErr.message}`);
+    try {
+      if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
+      }
+    } catch (discErr) {}
 
     if (!process.env.VERCEL) {
       try {
