@@ -7,6 +7,9 @@ import { ensureAdminAccount } from './adminInit.js';
 
 dotenv.config();
 
+// Disable command buffering so queries fail fast or fallback instead of hanging for 14s
+mongoose.set('bufferCommands', false);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const backendDir = path.resolve(__dirname, '..');
@@ -26,9 +29,9 @@ const connectDB = async () => {
   const localUri = 'mongodb://127.0.0.1:27017/mediscan_db';
 
   const connectionOpts = {
-    serverSelectionTimeoutMS: 4000,
-    connectTimeoutMS: 4000,
-    socketTimeoutMS: 30000,
+    serverSelectionTimeoutMS: 3000,
+    connectTimeoutMS: 3000,
+    socketTimeoutMS: 15000,
     family: 4
   };
 
@@ -41,83 +44,33 @@ const connectDB = async () => {
       await ensureAdminAccount();
       return conn;
     } catch (primaryErr) {
-      console.warn(`[MEDISCAN DB] Primary DB connection unavailable (${primaryErr.message}). Switching to local fallback...`);
+      console.warn(`[MEDISCAN DB] Primary DB connection unavailable (${primaryErr.message}). Switching to fallback...`);
     }
   }
 
-  if (process.env.VERCEL) {
-    console.warn(`[MEDISCAN DB] Running on Vercel Serverless environment. Skipping local MongoDB / MongoMemoryServer fallback.`);
-    isConnecting = false;
-    return mongoose.connection;
-  }
-
-  isSwitchingFallback = true;
+  // If running on Vercel or local fallback required, try MongoMemoryServer in-memory DB
   try {
     if (mongoose.connection.readyState !== 0) {
       await mongoose.disconnect();
     }
-    const conn = await mongoose.connect(localUri, connectionOpts);
-    console.log(`[MEDISCAN DB] Connected to Local MongoDB: ${conn.connection.host}`);
+
+    if (!memoryServerInstance) {
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
+      memoryServerInstance = await MongoMemoryServer.create();
+    }
+
+    const mongoUri = memoryServerInstance.getUri();
+    const conn = await mongoose.connect(mongoUri);
+    console.log(`[MEDISCAN DB] Connected to In-Memory Database Fallback: ${conn.connection.host}`);
     isConnecting = false;
     isSwitchingFallback = false;
     await ensureAdminAccount();
     return conn;
-  } catch (localErr) {
-    console.warn(`[MEDISCAN DB] Local MongoDB server not running. Initializing Persistent Embedded Database...`);
-    try {
-      if (mongoose.connection.readyState !== 0) {
-        await mongoose.disconnect();
-      }
-
-      const dbDir = path.join(backendDir, 'data', 'db');
-      if (!fs.existsSync(dbDir)) {
-        try { fs.mkdirSync(dbDir, { recursive: true }); } catch (e) {}
-      }
-
-      if (!memoryServerInstance) {
-        const { MongoMemoryServer } = await import('mongodb-memory-server');
-        try {
-          const lockFile = path.join(dbDir, 'mongod.lock');
-          if (fs.existsSync(lockFile)) {
-            try { fs.unlinkSync(lockFile); } catch (e) {}
-          }
-          memoryServerInstance = await MongoMemoryServer.create({
-            instance: {
-              dbPath: dbDir,
-              storageEngine: 'wiredTiger'
-            }
-          });
-        } catch (dbPathErr) {
-          console.warn(`[MEDISCAN DB] Persistent storage locked/unavailable (${dbPathErr.message}). Switching to pure in-memory server...`);
-          memoryServerInstance = await MongoMemoryServer.create();
-        }
-      }
-
-      const mongoUri = memoryServerInstance.getUri();
-      const conn = await mongoose.connect(mongoUri);
-      console.log(`[MEDISCAN DB] Connected to Embedded Database (MERN Active): ${conn.connection.host}`);
-      isConnecting = false;
-      isSwitchingFallback = false;
-      await ensureAdminAccount();
-      return conn;
-    } catch (memErr) {
-      console.error(`[MEDISCAN DB] Persistent Embedded DB failed (${memErr.message}), initializing pure in-memory database fallback...`);
-      try {
-        const { MongoMemoryServer } = await import('mongodb-memory-server');
-        memoryServerInstance = await MongoMemoryServer.create();
-        const mongoUri = memoryServerInstance.getUri();
-        const conn = await mongoose.connect(mongoUri);
-        console.log(`[MEDISCAN DB] Connected to Pure In-Memory Database: ${conn.connection.host}`);
-        isConnecting = false;
-        isSwitchingFallback = false;
-        await ensureAdminAccount();
-        return conn;
-      } catch (finalErr) {
-        console.error(`[MEDISCAN DB Critical Error] Failed to initialize any database instance: ${finalErr.message}`);
-        isConnecting = false;
-        isSwitchingFallback = false;
-      }
-    }
+  } catch (fallbackErr) {
+    console.error(`[MEDISCAN DB Critical Error] Failed to initialize in-memory fallback: ${fallbackErr.message}`);
+    isConnecting = false;
+    isSwitchingFallback = false;
+    return mongoose.connection;
   }
 };
 

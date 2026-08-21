@@ -5,53 +5,51 @@ const AuthContext = createContext();
 
 // Helper to get local DB users
 const getLocalUsers = () => {
+  let users = [];
   try {
     const stored = localStorage.getItem('mediscan_users_db');
-    if (stored) return JSON.parse(stored);
+    if (stored) users = JSON.parse(stored);
   } catch (e) {
     console.error('Failed to parse local users', e);
   }
-  // Default seed users
-  const defaultUsers = [
-    {
-      _id: 'usr_admin_00',
-      name: 'System Admin',
-      email: 'admin@gmail.com',
-      password: 'admin123',
-      role: 'admin',
-      isVerified: true,
-      phone: '+91 9876543210'
-    },
-    {
-      _id: 'usr_admin_01',
-      name: 'Mediscan Admin',
-      email: 'admin@mediscan.com',
-      password: 'admin123',
-      role: 'admin',
-      isVerified: true,
-      phone: '+1 800-555-0199'
-    },
-    {
-      _id: 'usr_demo_02',
-      name: 'John Doe',
-      email: 'user@mediscan.com',
-      password: 'User@123',
-      role: 'user',
-      isVerified: true,
-      phone: '+1 555-0142'
-    },
-    {
-      _id: 'usr_bittu_03',
-      name: 'Bittu Kumar',
-      email: 'bittu@gmail.com',
-      password: '123456',
-      role: 'user',
-      isVerified: true,
-      phone: '+91 9876543210'
-    }
-  ];
-  localStorage.setItem('mediscan_users_db', JSON.stringify(defaultUsers));
-  return defaultUsers;
+
+  // Ensure default accounts exist in array
+  const defaultAdmin = {
+    _id: 'usr_admin_00',
+    name: 'System Admin',
+    email: 'admin@gmail.com',
+    password: 'admin123',
+    role: 'admin',
+    isVerified: true,
+    phone: '+91 9876543210'
+  };
+
+  const adminIndex = users.findIndex(u => u.email && u.email.toLowerCase() === 'admin@gmail.com');
+  if (adminIndex === -1) {
+    users.unshift(defaultAdmin);
+  } else {
+    users[adminIndex].password = 'admin123';
+    users[adminIndex].role = 'admin';
+    users[adminIndex].isVerified = true;
+  }
+
+  if (users.length === 0) {
+    users = [
+      defaultAdmin,
+      {
+        _id: 'usr_demo_02',
+        name: 'John Doe',
+        email: 'user@mediscan.com',
+        password: 'User@123',
+        role: 'user',
+        isVerified: true,
+        phone: '+1 555-0142'
+      }
+    ];
+  }
+
+  localStorage.setItem('mediscan_users_db', JSON.stringify(users));
+  return users;
 };
 
 const saveLocalUsers = (users) => {
