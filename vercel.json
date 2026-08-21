@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd React && npm install && npm run build",
+  "buildCommand": "npm install && cd React && npm install && npx vite build",
   "outputDirectory": "React/dist",
   "routes": [
     {

@@ -1,12 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import sharp from 'sharp';
 import { fileURLToPath } from 'url';
 import { findMatchingMedicine, parseGenericMedicineFromText } from './medicineDatabase.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const backendDir = path.resolve(__dirname, '..');
+
+let sharp = null;
+try {
+  const sharpModule = await import('sharp');
+  sharp = sharpModule.default || sharpModule;
+} catch (e) {
+  console.warn('[MEDISCAN OCR] Sharp module load warning:', e.message);
+}
 
 let tesseract = null;
 try {
@@ -85,12 +92,14 @@ export const processMedicineImage = async (imageInput, presetKey = null, origina
       if (rawBuffer) {
         let processedPngBuffer = null;
         try {
-          processedPngBuffer = await sharp(rawBuffer)
-            .resize({ width: 1800, withoutEnlargement: false })
-            .grayscale()
-            .normalize()
-            .png()
-            .toBuffer();
+          if (sharp) {
+            processedPngBuffer = await sharp(rawBuffer)
+              .resize({ width: 1800, withoutEnlargement: false })
+              .grayscale()
+              .normalize()
+              .png()
+              .toBuffer();
+          }
         } catch (sharpErr) {
           console.warn('[MEDISCAN SHARP PREPROCESSING] Sharp warning:', sharpErr.message);
         }
