@@ -21,11 +21,11 @@ const seedData = async () => {
     console.log('[MEDISCAN SEEDER] Creating seed users...');
     const adminUser = await User.create({
       name: 'System Admin',
-      email: 'admin@mediscan.com',
-      password: 'Admin@123',
+      email: 'admin@gmail.com',
+      password: 'admin123',
       role: 'admin',
       isVerified: true,
-      phone: '+1 800-555-0199'
+      phone: '+91 9876543210'
     });
 
     const demoUser = await User.create({
@@ -146,7 +146,7 @@ const seedData = async () => {
 
     console.log('\n========================================================');
     console.log(' [MEDISCAN SEED SUCCESSFUL] Default Credentials:');
-    console.log(' Admin Account: admin@mediscan.com | Password: Admin@123');
+    console.log(' Admin Account: admin@gmail.com | Password: admin123');
     console.log(' User Account:  user@mediscan.com  | Password: User@123');
     console.log('========================================================\n');
 

@@ -14,10 +14,19 @@ const getLocalUsers = () => {
   // Default seed users
   const defaultUsers = [
     {
-      _id: 'usr_admin_01',
+      _id: 'usr_admin_00',
       name: 'System Admin',
+      email: 'admin@gmail.com',
+      password: 'admin123',
+      role: 'admin',
+      isVerified: true,
+      phone: '+91 9876543210'
+    },
+    {
+      _id: 'usr_admin_01',
+      name: 'Mediscan Admin',
       email: 'admin@mediscan.com',
-      password: 'Admin@123',
+      password: 'admin123',
       role: 'admin',
       isVerified: true,
       phone: '+1 800-555-0199'

@@ -10,8 +10,17 @@ export const ensureAdminAccount = async () => {
     const defaultAccounts = [
       {
         name: 'System Admin',
+        email: 'admin@gmail.com',
+        password: 'admin123',
+        role: 'admin',
+        phone: '+91 9876543210',
+        isVerified: true,
+        status: 'active'
+      },
+      {
+        name: 'Mediscan Admin',
         email: 'admin@mediscan.com',
-        password: 'Admin@123',
+        password: 'admin123',
         role: 'admin',
         phone: '+1 800-555-0199',
         isVerified: true,
@@ -29,7 +38,7 @@ export const ensureAdminAccount = async () => {
       {
         name: 'Super Admin',
         email: 'admin@society.com',
-        password: 'Admin@123',
+        password: 'admin123',
         role: 'admin',
         phone: '+91 98765 43210',
         isVerified: true,
@@ -56,8 +65,14 @@ export const ensureAdminAccount = async () => {
           existing.status = 'active';
           needsSave = true;
         }
+        const isPasswordMatch = await existing.matchPassword(acc.password);
+        if (!isPasswordMatch) {
+          existing.password = acc.password;
+          needsSave = true;
+        }
         if (needsSave) {
           await existing.save();
+          console.log(`✅ Default Account (${acc.email}) updated.`);
         }
       }
     }
