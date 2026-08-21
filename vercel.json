@@ -1,15 +1,18 @@
 {
   "version": 2,
-  "buildCommand": "npm install && cd React && npm install && npx vite build",
+  "buildCommand": "cd React && npm install && npx vite build",
   "outputDirectory": "React/dist",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/index.js"
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
     },
     {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
