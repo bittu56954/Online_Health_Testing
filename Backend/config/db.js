@@ -56,22 +56,25 @@ const connectDB = async () => {
     return conn;
   } catch (primaryErr) {
     cachedPromise = null;
-    console.error(`[MEDISCAN DB ERR] Connection failed: ${primaryErr.message}`);
+    console.warn(`[MEDISCAN DB WARN] Primary DB connection unavailable (${primaryErr.message}). Activating auto-fallback database...`);
 
-    if (!process.env.VERCEL) {
-      try {
-        const { MongoMemoryServer } = await import('mongodb-memory-server');
-        const memoryServerInstance = await MongoMemoryServer.create();
-        const mongoUri = memoryServerInstance.getUri();
-        const conn = await mongoose.connect(mongoUri);
-        cachedConn = conn;
-        await ensureAdminAccount();
-        return conn;
-      } catch (fallbackErr) {
-        console.error(`[MEDISCAN DB FALLBACK ERR] ${fallbackErr.message}`);
+    try {
+      if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
       }
+
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
+      const memoryServerInstance = await MongoMemoryServer.create();
+      const mongoUri = memoryServerInstance.getUri();
+      const conn = await mongoose.connect(mongoUri);
+      cachedConn = conn;
+      console.log(`[MEDISCAN DB] Successfully Connected to Auto-Fallback In-Memory Database: ${conn.connection.host}`);
+      await ensureAdminAccount();
+      return conn;
+    } catch (fallbackErr) {
+      console.error(`[MEDISCAN DB CRITICAL ERR] Fallback DB failed: ${fallbackErr.message}`);
+      throw primaryErr;
     }
-    throw primaryErr;
   }
 };
 
