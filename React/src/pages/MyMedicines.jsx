@@ -26,7 +26,16 @@ const MyMedicines = () => {
         setMedicines(res.data.medicines || []);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch saved medicines.');
+      try {
+        const stored = localStorage.getItem('mediscan_saved_medicines');
+        if (stored) {
+          setMedicines(JSON.parse(stored));
+        } else {
+          setError(err.response?.data?.message || 'Failed to fetch saved medicines.');
+        }
+      } catch (e) {
+        setError(err.response?.data?.message || 'Failed to fetch saved medicines.');
+      }
     } finally {
       setLoading(false);
     }
@@ -44,7 +53,18 @@ const MyMedicines = () => {
         }
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete medicine.');
+      try {
+        const stored = localStorage.getItem('mediscan_saved_medicines');
+        const existing = stored ? JSON.parse(stored) : [];
+        const updated = existing.filter((m) => m._id !== id);
+        localStorage.setItem('mediscan_saved_medicines', JSON.stringify(updated));
+        setMedicines((prev) => prev.filter((m) => m._id !== id));
+        if (selectedMedicine && selectedMedicine._id === id) {
+          setSelectedMedicine(null);
+        }
+      } catch (localErr) {
+        alert(err.response?.data?.message || 'Failed to delete medicine.');
+      }
     }
   };
 

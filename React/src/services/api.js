@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5001/api';
+const API_URL = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://127.0.0.1:5001/api' : '/api');
 
 const api = axios.create({
   baseURL: API_URL,
@@ -19,6 +19,20 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Interceptor to handle 401 Unauthorized globally & clear invalid tokens
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.warn('[MEDISCAN API] 401 Unauthorized detected. Clearing stale auth token.');
+      localStorage.removeItem('mediscan_token');
+      localStorage.removeItem('mediscan_user_data');
+      window.dispatchEvent(new Event('mediscan_auth_unauthorized'));
+    }
+    return Promise.reject(error);
+  }
 );
 
 // Auth Endpoints

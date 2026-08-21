@@ -66,6 +66,16 @@ export const AuthProvider = ({ children }) => {
   const [pendingEmail, setPendingEmail] = useState(localStorage.getItem('mediscan_pending_email') || null);
   const [loading, setLoading] = useState(true);
 
+  // Listen for global 401 unauthorized events
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setToken(null);
+      setUser(null);
+    };
+    window.addEventListener('mediscan_auth_unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('mediscan_auth_unauthorized', handleUnauthorized);
+  }, []);
+
   // Initialize user profile if token exists
   useEffect(() => {
     const loadUser = async () => {
@@ -90,10 +100,11 @@ export const AuthProvider = ({ children }) => {
             console.warn('[MEDISCAN AUTH] Token check error, checking local session');
             try {
               const storedUser = localStorage.getItem('mediscan_user_data');
-              if (storedUser) {
+              if (storedUser && err.response?.status !== 401) {
                 setUser(JSON.parse(storedUser));
               } else {
                 localStorage.removeItem('mediscan_token');
+                localStorage.removeItem('mediscan_user_data');
                 setToken(null);
                 setUser(null);
               }
@@ -103,6 +114,8 @@ export const AuthProvider = ({ children }) => {
             }
           }
         }
+      } else {
+        setUser(null);
       }
       setLoading(false);
     };
