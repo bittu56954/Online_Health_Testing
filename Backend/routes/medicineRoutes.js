@@ -13,16 +13,20 @@ import { protect, optionalProtect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Multer storage engine for medicine label uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, 'scan-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const uploadDir = process.env.VERCEL ? path.join('/tmp', 'uploads') : 'uploads/';
+
+// Multer storage engine for medicine label uploads (Use memory storage on Vercel)
+const storage = process.env.VERCEL
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, uploadDir);
+      },
+      filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, 'scan-' + uniqueSuffix + path.extname(file.originalname));
+      }
+    });
 
 const upload = multer({
   storage: storage,

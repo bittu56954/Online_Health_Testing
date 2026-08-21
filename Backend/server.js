@@ -18,10 +18,14 @@ import adminRoutes from './routes/adminRoutes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure uploads folder exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+// Ensure uploads folder exists safely (support Vercel read-only filesystem)
+const uploadsDir = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.join(__dirname, 'uploads');
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (e) {
+  console.warn('[MEDISCAN UPLOADS WARNING] Could not create uploads folder:', e.message);
 }
 
 // Connect to Database
@@ -37,6 +41,16 @@ app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 app.use(cors());
 app.use(morgan('dev'));
+
+// Ensure DB connection is active before processing requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('[MEDISCAN DB REQUEST MIDDLEWARE ERR]', err.message);
+  }
+  next();
+});
 
 // Static uploads directory
 app.use('/uploads', express.static(uploadsDir));

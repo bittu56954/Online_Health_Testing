@@ -102,10 +102,11 @@ export const processMedicineImage = async (imageInput, presetKey = null, origina
         if (processedPngBuffer) {
           let worker = null;
           try {
-            // Pass local traineddata directory to prevent network timeout issues
+            // Pass local traineddata directory (use /tmp on Vercel)
+            const tessPath = process.env.VERCEL ? '/tmp' : backendDir;
             worker = await tesseract.createWorker('eng', 1, {
-              langPath: backendDir,
-              cachePath: backendDir,
+              langPath: tessPath,
+              cachePath: tessPath,
               gzip: false,
               logger: () => {}
             });

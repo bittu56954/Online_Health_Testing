@@ -22,12 +22,12 @@ const connectDB = async () => {
   if (isConnecting) return;
   isConnecting = true;
 
-  const primaryUri = process.env.MONGO_URI;
+  const primaryUri = process.env.MONGO_URI || 'mongodb+srv://krbittu803110_db_user:dPU9R7yWn6z813GU@cluster0.j2vupm7.mongodb.net/india';
   const localUri = 'mongodb://127.0.0.1:27017/mediscan_db';
 
   const connectionOpts = {
-    serverSelectionTimeoutMS: 2500,
-    connectTimeoutMS: 3000,
+    serverSelectionTimeoutMS: 4000,
+    connectTimeoutMS: 4000,
     socketTimeoutMS: 30000,
     family: 4
   };
@@ -43,6 +43,12 @@ const connectDB = async () => {
     } catch (primaryErr) {
       console.warn(`[MEDISCAN DB] Primary DB connection unavailable (${primaryErr.message}). Switching to local fallback...`);
     }
+  }
+
+  if (process.env.VERCEL) {
+    console.warn(`[MEDISCAN DB] Running on Vercel Serverless environment. Skipping local MongoDB / MongoMemoryServer fallback.`);
+    isConnecting = false;
+    return mongoose.connection;
   }
 
   isSwitchingFallback = true;
@@ -65,7 +71,7 @@ const connectDB = async () => {
 
       const dbDir = path.join(backendDir, 'data', 'db');
       if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir, { recursive: true });
+        try { fs.mkdirSync(dbDir, { recursive: true }); } catch (e) {}
       }
 
       if (!memoryServerInstance) {
