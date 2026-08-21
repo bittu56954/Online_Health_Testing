@@ -68,22 +68,26 @@ app.use((err, req, res, next) => {
 
 const PORT = parseInt(process.env.PORT || '5001', 10);
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n========================================================`);
-  console.log(` [MEDISCAN SERVER] Running on http://127.0.0.1:${PORT}`);
-  console.log(` Healthcheck: http://127.0.0.1:${PORT}/api/health`);
-  console.log(`========================================================\n`);
-});
+if (!process.env.VERCEL) {
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n========================================================`);
+    console.log(` [MEDISCAN SERVER] Running on http://127.0.0.1:${PORT}`);
+    console.log(` Healthcheck: http://127.0.0.1:${PORT}/api/health`);
+    console.log(`========================================================\n`);
+  });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`\n[PORT CONFLICT ERROR] Port ${PORT} is already in use by another process.`);
-    console.error(`To resolve this issue, please terminate the process occupying port ${PORT} or restart nodemon.\n`);
-  } else {
-    console.error(`[SERVER LISTEN ERROR] ${err.message}`);
-  }
-});
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`\n[PORT CONFLICT ERROR] Port ${PORT} is already in use by another process.`);
+      console.error(`To resolve this issue, please terminate the process occupying port ${PORT} or restart nodemon.\n`);
+    } else {
+      console.error(`[SERVER LISTEN ERROR] ${err.message}`);
+    }
+  });
+}
 
 process.on('unhandledRejection', (err) => {
   console.error(`[UNHANDLED REJECTION] ${err.message}`);
 });
+
+export default app;

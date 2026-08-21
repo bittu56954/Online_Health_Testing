@@ -2,7 +2,16 @@
   "version": 2,
   "buildCommand": "cd React && npm install && npm run build",
   "outputDirectory": "React/dist",
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "Backend/**"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
