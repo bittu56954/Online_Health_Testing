@@ -52,21 +52,32 @@ app.use(async (req, res, next) => {
 // Static uploads directory
 app.use('/uploads', express.static(uploadsDir));
 
-// Healthcheck Route
-app.get('/api/health', (req, res) => {
+// Healthcheck Routes
+const healthHandler = (req, res) => {
   res.status(200).json({
     success: true,
     message: 'MEDISCAN API Server is operational',
     timestamp: new Date().toISOString()
   });
-});
+};
+app.get('/api/health', healthHandler);
+app.get('/health', healthHandler);
 
-// API Routes
+// API Routes (Mounted with /api prefix and root prefix for Vercel Serverless compatibility)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/medicines', medicineRoutes);
+app.use('/medicines', medicineRoutes);
+
 app.use('/api/history', historyRoutes);
+app.use('/history', historyRoutes);
+
 app.use('/api/reminders', reminderRoutes);
+app.use('/reminders', reminderRoutes);
+
 app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 
 // Global Error Handler Middleware
 app.use((err, req, res, next) => {
