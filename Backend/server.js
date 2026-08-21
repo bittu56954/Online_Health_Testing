@@ -48,11 +48,22 @@ app.use(morgan('dev'));
 
 // Ensure DB connection is active before processing requests
 app.use(async (req, res, next) => {
+  if (req.path === '/api/health' || req.path === '/health') {
+    return next();
+  }
   try {
     await connectDB();
   } catch (err) {
     console.error('[MEDISCAN DB REQUEST MIDDLEWARE ERR]', err.message);
   }
+
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection currently unavailable. Please verify your MongoDB Atlas connection string (MONGO_URI) and Network IP Access.'
+    });
+  }
+
   next();
 });
 
