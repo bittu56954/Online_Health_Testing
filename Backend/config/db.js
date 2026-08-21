@@ -1,8 +1,16 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import dns from 'dns';
 import { ensureAdminAccount } from './adminInit.js';
 
 dotenv.config();
+
+// Ensure Google public DNS is used for reliable MongoDB SRV resolution
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  // Ignore in environments where setting DNS servers is restricted
+}
 
 let cachedConn = null;
 let cachedPromise = null;
