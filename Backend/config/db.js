@@ -35,8 +35,10 @@ const connectDB = async () => {
   const primaryUri = process.env.MONGO_URI || 'mongodb+srv://krbittu803110_db_user:dPU9R7yWn6z813GU@cluster0.j2vupm7.mongodb.net/india';
 
   const connectionOpts = {
-    serverSelectionTimeoutMS: 2500,
-    connectTimeoutMS: 2500,
+    serverSelectionTimeoutMS: 1500,
+    connectTimeoutMS: 1500,
+    socketTimeoutMS: 1500,
+    maxPoolSize: 1,
     family: 4
   };
 
