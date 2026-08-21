@@ -30,8 +30,15 @@ try {
 
 const app = express();
 
-// Disable ETags for API endpoints to return 200 OK with fresh data
+// Disable ETags and caching for API endpoints to force 200 OK with fresh data
 app.disable('etag');
+
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
 
 // Middleware
 app.use(express.json({ limit: '15mb' }));
