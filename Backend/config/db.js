@@ -50,10 +50,12 @@ const connectDB = async () => {
     cachedPromise = null;
     console.log(`[MEDISCAN DB] Successfully Connected to Primary Database: ${conn.connection.host}`);
     
-    // Provision default accounts asynchronously in background
-    ensureAdminAccount().catch((err) => {
-      console.warn('[MEDISCAN DB ADMIN INIT WARN]', err.message);
-    });
+    // Provision default accounts asynchronously in background for local dev
+    if (!process.env.VERCEL) {
+      ensureAdminAccount().catch((err) => {
+        console.warn('[MEDISCAN DB ADMIN INIT WARN]', err.message);
+      });
+    }
 
     return conn;
   } catch (primaryErr) {
