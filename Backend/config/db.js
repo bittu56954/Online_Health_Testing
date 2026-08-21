@@ -35,22 +35,29 @@ const connectDB = async () => {
   const primaryUri = process.env.MONGO_URI || 'mongodb+srv://krbittu803110_db_user:dPU9R7yWn6z813GU@cluster0.j2vupm7.mongodb.net/india';
 
   const connectionOpts = {
-    serverSelectionTimeoutMS: 1500,
-    connectTimeoutMS: 1500,
-    socketTimeoutMS: 1500,
+    serverSelectionTimeoutMS: 2000,
+    connectTimeoutMS: 2000,
+    socketTimeoutMS: 2000,
     maxPoolSize: 1,
+    minPoolSize: 0,
     family: 4
   };
 
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('MongoDB connection timeout (2500ms limit reached)')), 2500);
+  });
+
   try {
     console.log(`[MEDISCAN DB] Connecting to Primary Database...`);
-    cachedPromise = mongoose.connect(primaryUri, connectionOpts);
+    cachedPromise = Promise.race([
+      mongoose.connect(primaryUri, connectionOpts),
+      timeoutPromise
+    ]);
     const conn = await cachedPromise;
     cachedConn = conn;
     cachedPromise = null;
     console.log(`[MEDISCAN DB] Successfully Connected to Primary Database: ${conn.connection.host}`);
     
-    // Provision default accounts asynchronously in background for local dev
     if (!process.env.VERCEL) {
       ensureAdminAccount().catch((err) => {
         console.warn('[MEDISCAN DB ADMIN INIT WARN]', err.message);
