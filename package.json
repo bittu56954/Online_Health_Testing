@@ -1,6 +1,7 @@
 {
   "name": "mediscan-fullstack",
   "version": "1.0.0",
+  "type": "module",
   "description": "MEDISCAN - Full-Stack Medicine Information Scanner Web Application (MERN)",
   "private": true,
   "scripts": {
